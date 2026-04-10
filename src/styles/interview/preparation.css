@@ -1,0 +1,160 @@
+/* 准备阶段样式 */
+.preparation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+}
+
+.header-left {
+  flex: 0 0 auto; /* 不拉伸，根据内容自适应 */
+}
+
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.header-right {
+  flex: 0 0 auto; /* 不拉伸，根据内容自适应 */
+}
+
+.header-back-button,
+.header-start-button {
+  white-space: nowrap; /* 防止文字换行 */
+  min-width: auto; /* 移除最小宽度限制 */
+  width: auto; /* 宽度自适应内容 */
+}
+
+.preparation-content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  /* Adding cursor styling rules for preparation stage */
+  /* Prevent text cursor on preparation stage elements */
+  *:not(input):not(textarea):not([contenteditable="true"]) {
+    cursor: default !important;
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text !important;
+    user-select: text;
+  }
+}
+
+.preparation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+/* 滑动动画 */
+.slide-right-enter-active,
+.slide-left-enter-active {
+  transition: all 0.6s ease;
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 淡入动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-up-enter-active {
+  transition: all 0.6s ease;
+  transition-delay: var(--delay, 0s);
+}
+
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* 检查项动画 */
+.check-item-enter-active {
+  transition: all 0.4s ease;
+  transition-delay: var(--delay, 0s);
+}
+
+.check-item-enter-from {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .preparation-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 移动端改为垂直布局，保持标题居中 */
+  .preparation-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .header-center {
+    position: static;
+    transform: none;
+    order: -1; /* 标题显示在最上方 */
+  }
+
+  .header-left,
+  .header-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-back-button,
+  .header-start-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .preparation-content {
+    padding: 20px;
+    gap: 30px;
+  }
+}

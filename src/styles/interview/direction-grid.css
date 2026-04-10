@@ -1,0 +1,324 @@
+/* 方向卡片详细样式 */
+.direction-card-wrapper {
+  position: relative;
+  /* 添加动画延迟变量支持 */
+  animation-delay: var(--delay, 0s);
+}
+
+.direction-card-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  /* 确保伪元素不阻挡点击事件 */
+  pointer-events: none;
+}
+
+.direction-card-wrapper.selected::after {
+  opacity: 1;
+}
+
+/* 添加基础卡片样式和点击区域 */
+.direction-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  /* 确保卡片可以接收点击事件 */
+  pointer-events: auto;
+  /* 禁用文字选择，防止出现光标 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.card-main-content {
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  /* 确保主要内容区域可以接收点击事件 */
+  pointer-events: auto;
+  display: block;
+  width: 100%;
+  /* 禁用文字选择 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 添加基础卡片样式和点击区域 */
+.direction-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  /* 确保卡片可以接收点击事件 */
+  pointer-events: auto;
+}
+
+.card-main-content {
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  /* 确保主要内容区域可以接收点击事件 */
+  pointer-events: auto;
+  display: block;
+  width: 100%;
+}
+
+.direction-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  /* 确保图标不阻挡点击 */
+  pointer-events: none;
+}
+
+.direction-icon .icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+  /* 确保图标不阻挡点击 */
+  pointer-events: none;
+}
+
+.direction-info {
+  margin-bottom: 16px;
+  /* 确保信息区域不阻挡点击 */
+  pointer-events: none;
+}
+
+.direction-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+  /* 确保标题不阻挡点击 */
+  pointer-events: none;
+  /* 禁用标题文字选择 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.direction-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  /* 确保描述不阻挡点击 */
+  pointer-events: none;
+  /* 禁用描述文字选择 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.selection-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  /* 确保选中指示器不阻挡点击 */
+  pointer-events: none;
+}
+
+.check-icon {
+  width: 24px;
+  height: 24px;
+  color: #667eea;
+  /* 确保图标不阻挡点击 */
+  pointer-events: none;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+  /* 标签列表需要独立的点击处理 */
+  pointer-events: auto;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  /* 确保标签可以接收点击事件 */
+  pointer-events: auto;
+  /* 禁用标签文字选择 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.direction-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  /* 确保统计信息不阻挡点击 */
+  pointer-events: none;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666;
+  font-size: 14px;
+  /* 确保统计项不阻挡点击 */
+  pointer-events: none;
+}
+
+.stat-icon {
+  width: 16px;
+  height: 16px;
+  /* 确保统计图标不阻挡点击 */
+  pointer-events: none;
+}
+
+/* 卡片悬停效果 */
+.direction-card:hover .direction-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.direction-card:hover .direction-title {
+  color: #667eea;
+}
+
+/* 选中状态的特殊样式 */
+.direction-card-wrapper.selected .direction-card {
+  border-color: #667eea;
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.direction-card-wrapper.selected .direction-title {
+  color: #667eea;
+}
+
+/* 标签选中动画 */
+.tag.tag-selected {
+  animation: tag-selected 0.3s ease;
+}
+
+@keyframes tag-selected {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 加载状态 */
+.direction-card.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.direction-card.loading::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #667eea;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 前端方向样式 */
+.frontend-icon .direction-icon {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.frontend-tag {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.frontend-tag:hover,
+.frontend-tag.tag-selected {
+  background: #667eea;
+  color: white;
+}
+
+/* 后端方向样式 */
+.backend-icon .direction-icon {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.backend-tag {
+  background: rgba(245, 87, 108, 0.1);
+  color: #f5576c;
+}
+
+.backend-tag:hover,
+.backend-tag.tag-selected {
+  background: #f5576c;
+  color: white;
+}
+
+/* 全栈方向样式 */
+.fullstack-icon .direction-icon {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.fullstack-tag {
+  background: rgba(79, 172, 254, 0.1);
+  color: #4facfe;
+}
+
+.fullstack-tag:hover,
+.fullstack-tag.tag-selected {
+  background: #4facfe;
+  color: white;
+}

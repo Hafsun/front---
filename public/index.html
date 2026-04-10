@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 保留你专业的 viewport 配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <!-- 全局基础样式（移动端适配核心） -->
+    <style>
+      /* 全局重置：防止手机横向滚动、溢出 */
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      /* 全局移动端适配规则（手机屏 ≤ 480px 生效） */
+      @media (max-width: 480px) {
+        body {
+          font-size: 14px !important; /* 手机端字体变小 */
+          line-height: 1.5;
+        }
+        /* 所有带 container 类的容器适配手机 */
+        .container {
+          width: 100% !important;
+          padding: 0 10px !important;
+          margin: 0 auto !important;
+        }
+        /* 适配 Element Plus 组件 */
+        .el-card, .el-table, .el-form {
+          min-width: auto !important;
+          margin: 0 5px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <script
+async
+defer
+src="http://localhost:8088/chat/api/embed?protocol=http&host=localhost:8088&token=34430c9270dd8273">
+</script>
+
+
+  </body>
+</html>

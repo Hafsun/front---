@@ -1,0 +1,25 @@
+/* 报告概览样式 */
+.overview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.overview-content p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+}
+
+.overview-content strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .overview-content p {
+    font-size: 14px;
+  }
+}

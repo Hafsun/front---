@@ -1,0 +1,162 @@
+/* Extracted all styles from MainLayout.vue */
+.main-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  background-image: linear-gradient(to bottom right, var(--main-content-bg-start), var(--main-content-bg-end));
+  position: relative;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  /* margin: var(--spacing-md); */
+  display: flex;
+  flex-direction: column;
+  /* Changed from pure white to a subtle warm gray background */
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+  box-shadow: var(--shadow-prominent);
+  border-radius: var(--border-radius-lg);
+  height: calc(100vh - calc(var(--spacing-md) * 2));
+  overflow: visible;
+  position: relative;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: calc(var(--spacing-md) + 60px + var(--spacing-md));
+}
+
+.header-control {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+}
+
+.header-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 80px;
+  height: 40px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25);
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.header-toggle-btn.header-hidden-state {
+  border-color: #ff6b6b;
+}
+
+.header-toggle-btn.header-hidden-state:hover {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.btn-icon {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0, 1);
+}
+
+.btn-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.header-area {
+  flex-shrink: 0;
+  overflow: visible;
+  position: relative;
+}
+
+.content-header {
+  height: 60px;
+  /* Updated header background to complement the new main content background */
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 500;
+  border-bottom: 1px solid #f0f0f0;
+  overflow: visible;
+  position: relative;
+}
+
+.tabs-section {
+  /* Updated tabs section background to match the new color scheme */
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: margin-top 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.content-area.header-hidden {
+  margin-top: 0;
+}
+
+/* 头部区域动画样式 */
+.header-slide-enter-active,
+.header-slide-leave-active {
+  overflow: hidden;
+}
+
+.header-slide-enter-from,
+.header-slide-leave-to {
+  height: 0 !important;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.page-fade-enter-active,
+.page-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .header-toggle-btn {
+    min-width: 70px;
+    height: 36px;
+  }
+
+  .header-toggle-btn .btn-text {
+    display: none;
+  }
+
+  .header-control {
+    top: 8px;
+    right: 16px;
+  }
+}

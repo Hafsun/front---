@@ -1,0 +1,455 @@
+/* 在文件顶部添加以下 CSS 规则 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 全局样式变量 */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-heavy: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --border-radius: 0.75rem;
+  --transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1); /* 统一过渡时间 */
+}
+
+/* 背景渐变 */
+.bg-gradient {
+  background: var(--background-gradient);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 主容器 */
+.login-container {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-heavy);
+  height: 37.5rem;
+  max-width: 64rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%; /* 确保宽度为50% */
+  transition: var(--transition);
+}
+
+/* 登录表单 */
+.sign-in-container {
+  left: 0;
+  opacity: 1;
+  z-index: 20; /* 活跃时在上方 */
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.login-container.right-panel-active .sign-in-container {
+  transform: translateX(100%); /* 移到右侧 */
+  opacity: 0; /* 隐藏 */
+  z-index: 10; /* 移到下方 */
+  pointer-events: none; /* 禁用点击 */
+}
+
+/* 注册表单 */
+.sign-up-container {
+  left: 0; /* 初始位置在左侧 */
+  opacity: 0; /* 初始隐藏 */
+  z-index: 10; /* 初始在下方 */
+  pointer-events: none;
+  transform: translateX(0); /* 初始在左侧 */
+}
+
+.login-container.right-panel-active .sign-up-container {
+  transform: translateX(100%); /* 移到右侧 */
+  opacity: 1; /* 显示 */
+  z-index: 20; /* 移到上方 */
+  pointer-events: auto; /* 启用点击 */
+}
+
+/* 表单内容 */
+.form-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 3rem;
+  height: 100%;
+  text-align: center;
+}
+
+.form-header {
+  margin-bottom: 2rem;
+}
+
+.icon-wrapper {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  transition: var(--transition);
+}
+
+.login-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* 对应 React 的 blue-500 to purple-500 */
+}
+
+.register-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); /* 对应 React 的 purple-500 to pink-500 */
+}
+
+.icon-wrapper:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+}
+
+.form-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.form-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+/* 表单样式 */
+.form {
+  width: 100%;
+  max-width: 20rem;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
+}
+
+.input-group:focus-within {
+  transform: translateY(-2px);
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+  transition: var(--transition);
+  z-index: 10;
+}
+
+.input-group:focus-within .input-icon {
+  color: #667eea;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  background: white;
+  transition: var(--transition);
+  outline: none;
+}
+
+.input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-1px);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  transition: var(--transition);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.password-toggle:hover {
+  color: #667eea;
+  background: #f3f4f6;
+}
+
+.icon-sm {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* 按钮样式 */
+.btn {
+  padding: 0.75rem 2rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  font-size: 1.125rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-text {
+  background: none;
+  color: #667eea;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-text:hover {
+  color: #4f46e5;
+  background: #f0f9ff;
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 0.75rem 2.5rem;
+  font-size: 1rem;
+}
+
+.btn-outline:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* 覆盖面板 */
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.7s ease-in-out;
+  z-index: 30; /* 确保覆盖面板始终在最上层 */
+}
+
+.login-container.right-panel-active .overlay-container {
+  transform: translateX(-100%); /* 覆盖面板向左移动 */
+}
+
+.overlay {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); /* 对应 React 的 from-blue-500 via-purple-500 to-pink-500 */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  color: white;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.7s ease-in-out;
+}
+
+.login-container.right-panel-active .overlay {
+  transform: translateX(50%); /* 覆盖面板内部背景移动 */
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 2.5rem;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transition: transform 0.7s ease-in-out;
+}
+
+.overlay-left {
+  transform: translateX(-20%); /* 初始向左偏移 */
+}
+
+.login-container.right-panel-active .overlay-left {
+  transform: translateX(0); /* 活跃时回到原位 */
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0); /* 初始在右侧 */
+}
+
+.login-container.right-panel-active .overlay-right {
+  transform: translateX(20%); /* 活跃时向右偏移 */
+}
+
+.overlay-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.overlay-text {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .login-container {
+    height: auto;
+    min-height: 100vh;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .form-container {
+    position: relative;
+    width: 100% !important;
+    transform: none !important;
+  }
+
+  .sign-up-container {
+    display: none;
+  }
+
+  .overlay-container {
+    display: none;
+  }
+
+  .form-content {
+    padding: 2rem 1.5rem;
+    min-height: 100vh;
+  }
+
+  .form {
+    max-width: none;
+  }
+}
+
+/* 动画增强 */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-primary:focus {
+  animation: pulse 0.5s ease-in-out;
+}
+
+/* 加载状态 */
+.btn-loading {
+  pointer-events: none;
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* 高对比度模式 */
+@media (prefers-contrast: high) {
+  .input {
+    border-width: 3px;
+  }
+
+  .btn {
+    border: 2px solid currentColor;
+  }
+}

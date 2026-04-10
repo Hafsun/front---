@@ -1,0 +1,208 @@
+// Report List Styles
+.report-list {
+  .reports-content {
+    padding: $spacing-lg;
+    
+    @media (max-width: 768px) {
+      padding: $spacing-md;
+    }
+  }
+
+  .loading-container {
+    padding: $spacing-xl;
+  }
+
+  .empty-state {
+    padding: $spacing-xl;
+    text-align: center;
+  }
+
+  .mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    
+    .report-card {
+      background: white;
+      border-radius: 12px;
+      padding: $spacing-lg;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: $spacing-md;
+        
+        .card-title {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: $spacing-sm;
+        }
+        
+        .card-score {
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+          margin-left: $spacing-md;
+        }
+      }
+      
+      .card-content {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-lg;
+        
+        .info-row {
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+          font-size: 14px;
+          color: #6b7280;
+          
+          &.keywords-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: $spacing-xs;
+          }
+          
+          .label {
+            font-weight: 500;
+            color: #374151;
+            min-width: 50px;
+          }
+        }
+      }
+      
+      .card-actions {
+        display: flex;
+        gap: $spacing-sm;
+        justify-content: flex-end;
+      }
+    }
+  }
+
+  .desktop-table {
+    .responsive-table {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      .time-cell {
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+      }
+    }
+  }
+
+  .position-text {
+    font-weight: 600;
+    color: #1f2937;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .keywords-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    
+    .keyword-tag {
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 500;
+      
+      &:nth-child(2n) {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      
+      &:nth-child(3n) {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      
+      &:nth-child(4n) {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      }
+    }
+  }
+  
+  .no-keywords {
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+
+    .score-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      font-family: 'Montserrat', sans-serif;
+
+      &.score-excellent { color: #10b981; }
+      &.score-good { color: #3b82f6; }
+      &.score-average { color: #f59e0b; }
+      &.score-poor { color: #ef4444; }
+    }
+
+    .score-unit {
+      font-size: 0.95rem;
+      color: #6b7280;
+      font-family: 'Open Sans', sans-serif;
+    }
+  }
+
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: $spacing-xl;
+    padding: $spacing-lg;
+    
+    .responsive-pagination {
+      @media (max-width: 768px) {
+        :deep(.el-pagination__sizes),
+        :deep(.el-pagination__jump) {
+          display: none;
+        }
+        
+        :deep(.el-pagination) {
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .md\:hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hidden {
+    display: none !important;
+  }
+  
+  .md\:block {
+    display: block !important;
+  }
+}

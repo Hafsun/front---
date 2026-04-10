@@ -1,0 +1,36 @@
+/* 报告阶段样式 */
+.report-content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  /* Prevent text cursor on report stage elements */
+  *:not(input):not(textarea):not([contenteditable="true"]) {
+    cursor: default !important;
+    user-select: none;
+  }
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text !important;
+    user-select: text;
+  }
+}
+
+/* 淡入淡出动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .report-content {
+    padding: 20px;
+  }
+}

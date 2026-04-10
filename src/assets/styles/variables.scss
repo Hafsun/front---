@@ -1,0 +1,124 @@
+// 主题颜色
+$primary-color: #667eea; // 登录按钮起始渐变色（主色调）
+$primary-dark-color: #764ba2; // 登录按钮结束渐变色
+$primary-light-color: #e6f7ff; // 激活背景色（与登录页背景起始色匹配）
+
+// 功能色（状态相关）
+$success-color: #52c41a; // 成功状态
+$warning-color: #faad14; // 警告状态
+$error-color: #f5222d; // 错误状态
+$info-color: #1890ff; // 信息提示
+
+// 中性色（文本、边框、背景等基础色）
+$text-color: #303133; // 主要文本
+$text-color-secondary: #606266; // 次要文本
+$text-color-placeholder: #909399; // 占位符文本
+$border-color: #f0f0f0; // 边框色
+$background-color: #ffffff; // 页面背景色
+$card-background: #ffffff; // 卡片背景色
+
+// 主内容区域背景（渐变配色，与登录页一致）
+$main-content-bg-start: #dbeafe; // 登录页起始蓝色
+$main-content-bg-end: #e9d5ff; // 登录页结束紫色
+
+// 尺寸变量 - 布局相关
+$header-height: 60px; // 头部高度（固定值，滚动时不变）
+$sidebar-width: 200px; // 侧边栏宽度
+$input-height: 40px; // 输入框高度
+$button-height: 44px; // 按钮高度
+
+// 尺寸变量 - 阴影效果
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08); // 轻微阴影
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); // 中等阴影
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15); // 强烈阴影
+$shadow-prominent: 0 25px 50px -12px rgba(0, 0, 0, 0.25); // 突出阴影（主卡片/头部用）
+$shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.06); // 柔和阴影（辅助元素用）
+$shadow: $shadow-md; // 默认阴影，使用中等阴影
+
+// 尺寸变量 - 圆角
+$border-radius: 4px; // 基础圆角（兼容 AppSidebar.vue、global.scss 等现有引用）
+$border-radius-sm: 4px; // 小圆角（按钮、输入框）
+$border-radius-md: 8px; // 中圆角（卡片、弹窗）
+$border-radius-lg: 12px; // 大圆角（主容器）
+$border-radius-xl: 16px; // 超大圆角（特殊组件）
+$border-radius-full: 999px; // 全圆角（圆形元素）
+
+// 字体相关
+$font-size-small: 12px; // 超小字体
+$font-size-sm: 13px; // 小字体
+$font-size-base: 14px; // 基础字体（默认）
+$font-size-large: 16px; // 大字体
+$font-size-xl: 20px; // 超大字体
+$font-size-xxl: 24px; // 特大字体
+
+$font-weight-light: 300; // 轻量
+$font-weight-normal: 400; // 常规
+$font-weight-medium: 500; // 中等
+$font-weight-semibold: 600; // 半粗体
+$font-weight-bold: 700; // 粗体（修正冲突：原重复定义为500，此处统一为700）
+
+// 间距变量（统一采用8px基准的递进式间距）
+$spacing-xs: 4px; // 超小间距
+$spacing-sm: 8px; // 小间距
+$spacing-md: 16px; // 中间距
+$spacing-lg: 24px; // 大间距
+$spacing-xl: 32px; // 超大间距
+$spacing-xxl: 48px; // 特大间距
+
+// 动画相关
+$transition-speed: 0.3s; // 过渡动画速度
+$transition-ease: all 0.3s ease-in-out; // 平滑过渡效果
+
+// 响应式断点
+$screen-sm: 576px; // 小屏幕（手机）
+$screen-md: 768px; // 中等屏幕（平板）
+
+// 现代化主题扩展变量（与基础主题兼容，用于特定场景）
+$primary-modern: #6366F1; // 现代感紫蓝色（辅助主色调）
+$accent-modern: #10B981; // 活力绿色（成功/高亮用）
+$background-light: #F9FAFB; // 浅灰背景（替代纯白的柔和选项）
+$card-bg-light: #FFFFFF; // 浅色卡片背景（与基础主题一致，保持统一）
+$text-dark: #1F2937; // 深灰文本（比$text-color更深的选项）
+$text-medium: #6B7280; // 中灰文本（比$text-color-secondary更柔和的选项）
+$border-light: #E5E7EB; // 浅色边框（比$border-color更淡的选项）
+
+// 视频监控专用颜色系统（基于设计指导原则）
+$video-primary: #059669; // 主要操作色（emerald-600）
+$video-primary-light: #10b981; // 浅色主要色（emerald-500）
+$video-secondary: #f1f5f9; // 次要背景色（slate-100）
+$video-accent: #10b981; // 强调色（emerald-500）
+
+// 视频监控背景系统
+$video-bg-primary: #ffffff; // 主背景（白色）
+$video-bg-card: #f8fafc; // 卡片背景（slate-50）
+$video-bg-overlay: rgba(0, 0, 0, 0.8); // 遮罩背景
+$video-bg-glass: rgba(255, 255, 255, 0.1); // 玻璃效果背景
+
+// 视频监控文本颜色
+$video-text-primary: #0f172a; // 主要文本（slate-900）
+$video-text-secondary: #475569; // 次要文本（slate-600）
+$video-text-muted: #94a3b8; // 弱化文本（slate-400）
+$video-text-light: #ffffff; // 浅色文本
+
+// 视频监控边框和分割线
+$video-border: #e2e8f0; // 边框色（slate-200）
+$video-border-light: #f1f5f9; // 浅色边框（slate-100）
+
+// 视频监控状态颜色
+$video-success: #10b981; // 成功状态（emerald-500）
+$video-warning: #f59e0b; // 警告状态（amber-500）
+$video-error: #ef4444; // 错误状态（red-500）
+$video-info: #3b82f6; // 信息状态（blue-500）
+
+// 视频监控阴影系统
+$video-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$video-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$video-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$video-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+// 视频监控圆角系统
+$video-radius-sm: 0.375rem; // 6px
+$video-radius-md: 0.5rem; // 8px
+$video-radius-lg: 0.75rem; // 12px
+$video-radius-xl: 1rem; // 16px
+$video-radius-2xl: 1.5rem; // 24px

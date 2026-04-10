@@ -1,0 +1,128 @@
+// Report Header Styles
+.report-header {
+  .list-header {
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      span {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: $spacing-sm;
+        
+        .el-button {
+          border-radius: 8px;
+          font-weight: 600;
+          padding: 10px 20px;
+          transition: all 0.3s ease;
+          
+          &--primary {
+            background: #1f2937;
+            border-color: #1f2937;
+            
+            &:hover {
+              background: #374151;
+              border-color: #374151;
+              transform: translateY(-1px);
+              box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: $spacing-lg;
+    border-radius: 12px;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+
+      .back-btn {
+        color: #1f2937;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        
+        &:hover {
+          background: #f1f5f9;
+          color: #8b5cf6;
+        }
+      }
+
+      .report-title {
+        h2 {
+          margin: 0;
+          color: #1f2937;
+          font-size: 1.75rem;
+          font-weight: 700;
+          font-family: 'Montserrat', sans-serif;
+        }
+
+        .report-subtitle {
+          margin: 4px 0 0 0;
+          color: #6b7280;
+          font-size: 0.95rem;
+          font-family: 'Open Sans', sans-serif;
+        }
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: $spacing-sm;
+      
+      .el-button {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        
+        &--primary {
+          background: #1f2937;
+          border-color: #1f2937;
+          
+          &:hover {
+            background: #374151;
+            border-color: #374151;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .report-header {
+    .detail-header {
+      flex-direction: column;
+      gap: $spacing-md;
+      align-items: flex-start;
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  }
+}

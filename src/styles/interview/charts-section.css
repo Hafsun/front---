@@ -1,0 +1,80 @@
+/* 图表区域样式 */
+.chart-section {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.05) 0%, rgba(0, 242, 254, 0.05) 100%);
+  border: 1px solid rgba(79, 172, 254, 0.1);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.chart-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.chart-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  background: #f8fafc;
+  border-radius: 8px;
+  gap: 12px;
+}
+
+.placeholder-icon {
+  width: 48px;
+  height: 48px;
+  color: #cbd5e1;
+}
+
+.chart-placeholder span {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .chart-card {
+    padding: 16px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+  }
+
+  .chart-placeholder {
+    height: 150px;
+  }
+
+  .placeholder-icon {
+    width: 36px;
+    height: 36px;
+  }
+}

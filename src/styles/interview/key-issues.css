@@ -1,0 +1,98 @@
+/* 关键问题分析样式 */
+.key-issues-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.key-issue-card {
+  padding: 24px;
+  border-radius: 12px;
+  border: 2px solid;
+}
+
+.key-issue-card h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.issue-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.top-performance {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.top-performance h4 {
+  color: #10b981;
+}
+
+.top-performance .issue-icon {
+  color: #10b981;
+}
+
+.weak-performance {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.weak-performance h4 {
+  color: #ef4444;
+}
+
+.weak-performance .issue-icon {
+  color: #ef4444;
+}
+
+.key-issue-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.key-issue-card li {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.key-issue-card li:last-child {
+  margin-bottom: 0;
+}
+
+.issue-detail {
+  margin: 8px 0 0 0;
+  font-size: 13px;
+  color: #64748b;
+  font-style: italic;
+}
+
+.no-data {
+  font-size: 14px;
+  color: #64748b;
+  text-align: center;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .key-issues-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .key-issue-card {
+    padding: 20px;
+  }
+
+  .key-issue-card h4 {
+    font-size: 16px;
+  }
+}

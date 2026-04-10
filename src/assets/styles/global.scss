@@ -1,0 +1,121 @@
+@import './variables.scss';
+
+// 全局样式重置
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* 保持此设置，由 MainLayout 内部管理滚动 */
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+  font-size: $font-size-base;
+  color: $text-color;
+  background-color: $background-color;
+  line-height: 1.5;
+}
+
+// 自定义滚动条
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+// 基础动画
+
+/* 全局样式文件：增强 page-fade 动画 */
+.page-fade-enter-active {
+  /* 入场用更长时长（0.5s）+ 回弹曲线（模拟自然惯性） */
+  transition: 
+    opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), /* 轻微回弹 */
+    transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10; /* 确保入场元素在最上层 */
+}
+
+.page-fade-leave-active {
+  /* 退场保持稍快（0.4s）+ 平滑淡出曲线 */
+  transition: 
+    opacity 0.4s ease-in, 
+    transform 0.4s ease-in;
+  z-index: 5; /* 确保退场元素层级低于入场元素 */
+}
+/* 入场初始状态：下方位移+轻微缩小+透明 */
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.98); /* 位移+缩放结合 */
+}
+
+/* 退场结束状态：上方位移+透明（与入场方向区分） */
+.page-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98); /* 与入场方向相反，更协调 */
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity $transition-speed ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: transform $transition-speed ease;
+}
+
+.slide-enter-from, .slide-leave-to {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+// 容器样式
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
+}
+
+// 卡片样式
+.base-card {
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: $shadow;
+  transition: all $transition-speed;
+}
+
+.base-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Element Plus 标签颜色覆盖 */
+.el-form-item__label {
+  color: black;
+}
+
+// 在文件末尾添加以下 CSS 规则，以隐藏浏览器自动生成的密码显示/隐藏按钮
+// 这通常是 Chrome 等浏览器为了方便用户查看密码而添加的
+input::-ms-reveal,
+input::-webkit-contacts-auto-fill-button {
+  display: none !important;
+}

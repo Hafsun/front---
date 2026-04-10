@@ -1,0 +1,7 @@
+/* Extracted all styles from App.vue */
+
+/* 确保路由容器是相对定位，为绝对定位的过渡元素提供上下文 */
+router-view {
+  position: relative;
+  /* min-height: 100vh; */
+}

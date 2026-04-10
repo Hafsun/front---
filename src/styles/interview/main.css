@@ -1,0 +1,204 @@
+/* 主要容器样式 */
+.interview-room-container {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  /* overflow: hidden; */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 阶段容器样式 */
+.stage-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  /* overflow: hidden; */
+}
+
+/* 阶段切换动画：前进 */
+.stage-transition-forward-enter-active,
+.stage-transition-forward-leave-active {
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stage-transition-forward-enter-from {
+  opacity: 0;
+  transform: translateX(100px) scale(0.95);
+}
+
+.stage-transition-forward-leave-to {
+  opacity: 0;
+  transform: translateX(-100px) scale(0.95);
+}
+
+/* 阶段切换动画：后退 */
+.stage-transition-backward-enter-active,
+.stage-transition-backward-leave-active {
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.stage-transition-backward-enter-from {
+  opacity: 0;
+  transform: translateX(-100px) scale(0.95);
+}
+
+.stage-transition-backward-leave-to {
+  opacity: 0;
+  transform: translateX(100px) scale(0.95);
+}
+
+/* 通用卡片样式 */
+.selection-card,
+.preparation-card,
+.interview-card,
+.report-card {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 卡片头部通用样式 */
+.card-header {
+  padding: 1px 20px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  flex-shrink: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.header-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+/* 渐变背景样式 */
+.gradient-ai {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-preparation {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-interview {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.gradient-report {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+/* 按钮通用样式 */
+.header-proceed-button,
+.header-start-button,
+.header-back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.header-proceed-button:hover,
+.header-start-button:hover,
+.header-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.header-proceed-button.disabled,
+.header-start-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .interview-room-container {
+    padding: 10px;
+  }
+
+  .card-header {
+    padding: 20px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .card-title {
+    font-size: 24px;
+  }
+
+  .card-subtitle {
+    font-size: 14px;
+  }
+}

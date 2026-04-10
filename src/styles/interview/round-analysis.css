@@ -1,0 +1,69 @@
+/* 轮次分析样式 */
+.round-analysis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.round-analysis-card {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.round-analysis-card h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.analysis-item {
+  margin-bottom: 16px;
+}
+
+.analysis-item:last-child {
+  margin-bottom: 0;
+}
+
+.analysis-item strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+.analysis-item ul {
+  margin: 8px 0 0 20px;
+  padding: 0;
+}
+
+.analysis-item li {
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.analysis-item li:last-child {
+  margin-bottom: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .round-analysis-card {
+    padding: 20px;
+  }
+
+  .round-analysis-card h4 {
+    font-size: 16px;
+  }
+
+  .analysis-item {
+    font-size: 14px;
+  }
+
+  .analysis-item li {
+    font-size: 13px;
+  }
+}

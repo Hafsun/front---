@@ -1,0 +1,55 @@
+/* 报告摘要样式 */
+.report-summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(67, 233, 123, 0.2);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.score-highlight {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .report-summary-section {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .summary-value {
+    font-size: 16px;
+  }
+
+  .score-highlight {
+    font-size: 20px;
+  }
+}
