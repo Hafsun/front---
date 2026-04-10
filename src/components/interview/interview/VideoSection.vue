@@ -130,7 +130,7 @@
       </div>
     </div>
 
-    <!-- 使用ECharts柱形图替换原来的自定义柱形图实现 -->
+    <!-- 情绪分析卡片网格布局 -->
     <div class="emotion-analysis-container">
       <div class="analysis-header">
         <div class="header-left">
@@ -152,8 +152,22 @@
       
       <div class="chart-container">
         <div class="emotion-chart-container">
-          <div v-if="interviewStore.hasCameraPermission && interviewStore.currentExpressions" class="emotion-chart">
-            <EChartsBarChart v-if="emotionChartOption" :option="emotionChartOption" />
+          <div v-if="interviewStore.hasCameraPermission && interviewStore.currentExpressions" class="emotion-grid">
+            <div 
+              v-for="item in emotionList" 
+              :key="item.key" 
+              class="emotion-card" 
+              :style="{ borderLeftColor: item.color }"
+            >
+              <div class="emotion-info">
+                <span class="emotion-emoji">{{ item.icon }}</span>
+                <span class="emotion-label">{{ item.label }}</span>
+                <span class="emotion-value">{{ item.value }}%</span>
+              </div>
+              <div class="emotion-progress-bg">
+                <div class="emotion-progress-bar" :style="{ width: item.value + '%', backgroundColor: item.color }"></div>
+              </div>
+            </div>
           </div>
           <div v-else class="no-data-placeholder">
             <div class="placeholder-icon-wrapper">
@@ -176,7 +190,6 @@ import {
 import { interviewStore } from '../../../stores/interview';
 import * as faceapi from 'face-api.js';
 import { ElMessage } from 'element-plus';
-import EChartsBarChart from '../../ECharts/EChartsBarChart.vue';
 import { throttle } from 'lodash-es';
 
 const videoRef = ref(null);
@@ -376,111 +389,27 @@ const getSmileStatus = () => {
   return happyScore > 0.3 ? '是' : '否';
 };
 
-const emotionChartOption = computed(() => {
-  if (!interviewStore.currentExpressions) return null;
+const emotionList = computed(() => {
+  if (!interviewStore.currentExpressions) return [];
   
-  const emotions = ['happy', 'sad', 'angry', 'surprised', 'fearful', 'disgusted', 'neutral'];
-  const emotionLabels = {
-    'happy': '开心',
-    'sad': '悲伤',
-    'angry': '生气',
-    'surprised': '惊讶',
-    'fearful': '害怕',
-    'disgusted': '厌恶',
-    'neutral': '中性'
+  const emotions = ['neutral', 'happy', 'sad', 'angry', 'fearful', 'disgusted', 'surprised'];
+  const emotionConfig = {
+    'neutral': { label: '中性', icon: '😐', color: '#4b5563' },
+    'happy': { label: '开心', icon: '😊', color: '#f59e0b' },
+    'sad': { label: '悲伤', icon: '😢', color: '#10b981' },
+    'angry': { label: '生气', icon: '😠', color: '#ef4444' },
+    'fearful': { label: '害怕', icon: '😨', color: '#f97316' },
+    'disgusted': { label: '厌恶', icon: '🤢', color: '#3b82f6' },
+    'surprised': { label: '惊讶', icon: '😲', color: '#8b5cf6' }
   };
   
-  const emotionColors = {
-    'happy': '#10b981',
-    'sad': '#3b82f6', 
-    'angry': '#ef4444',
-    'surprised': '#f59e0b',
-    'fearful': '#8b5cf6',
-    'disgusted': '#6b7280',
-    'neutral': '#14b8a6'
-  };
-  
-  const data = emotions.map(emotion => ({
-    name: emotionLabels[emotion],
-    value: Math.round((interviewStore.currentExpressions[emotion] || 0) * 100),
-    itemStyle: {
-      color: emotionColors[emotion]
-    }
+  return emotions.map(key => ({
+    key,
+    label: emotionConfig[key].label,
+    icon: emotionConfig[key].icon,
+    color: emotionConfig[key].color,
+    value: Math.round((interviewStore.currentExpressions[key] || 0) * 100)
   }));
-  
-  return {
-    title: {
-      text: '实时情绪分析',
-      left: 'center',
-      textStyle: { 
-        fontSize: 14, 
-        fontWeight: 'bold',
-        color: '#374151'
-      }
-    },
-    tooltip: {
-      trigger: 'axis',
-      formatter: function(params) {
-        const param = params[0];
-        return `${param.name}: ${param.value}%`;
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: data.map(d => d.name),
-      axisLabel: { 
-        fontSize: 10,
-        color: '#6b7280',
-        rotate: 0
-      },
-      axisLine: {
-        lineStyle: {
-          color: '#e5e7eb'
-        }
-      }
-    },
-    yAxis: {
-      type: 'value',
-      min: 0,
-      max: 100,
-      axisLabel: { 
-        fontSize: 10, 
-        formatter: '{value}%',
-        color: '#6b7280'
-      },
-      axisLine: {
-        lineStyle: {
-          color: '#e5e7eb'
-        }
-      },
-      splitLine: {
-        lineStyle: {
-          color: '#f3f4f6',
-          type: 'dashed'
-        }
-      }
-    },
-    grid: {
-      left: '10%',
-      right: '10%',
-      top: '20%',
-      bottom: '15%'
-    },
-    series: [{
-      data: data,
-      type: 'bar',
-      barWidth: '60%',
-      label: {
-        show: true,
-        position: 'top',
-        formatter: '{c}%',
-        fontSize: 10,
-        color: '#374151'
-      },
-      animationDuration: 300,
-      animationEasing: 'cubicOut'
-    }]
-  };
 });
 
 const startDetection = () => {
@@ -1049,10 +978,68 @@ defineExpose({
   flex-direction: column;
 }
 
-.emotion-chart {
-  width: 100%;
+.emotion-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  overflow-y: auto;
+  align-content: flex-start;
   height: 100%;
-  min-height: 200px;
+}
+
+.emotion-card {
+  flex: 1 1 calc(25% - 0.75rem);
+  min-width: 130px;
+  background: $video-bg-primary;
+  border-radius: $video-radius-md;
+  padding: 0.75rem;
+  border-left: 4px solid;
+  box-shadow: $video-shadow-sm;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.emotion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: $video-shadow-md;
+}
+
+.emotion-info {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $video-text-primary;
+}
+
+.emotion-emoji {
+  font-size: 1.125rem;
+}
+
+.emotion-label {
+  flex: 1;
+}
+
+.emotion-value {
+  font-weight: 700;
+  color: $video-text-primary;
+}
+
+.emotion-progress-bg {
+  height: 6px;
+  background: $video-border;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.emotion-progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .no-data-placeholder {
@@ -1154,12 +1141,14 @@ defineExpose({
     justify-content: flex-end;
   }
   
-  .emotion-chart {
+  .emotion-grid {
     gap: 0.5rem;
   }
   
-  .emotion-bar-item {
-    padding: 0.375rem;
+  .emotion-card {
+    padding: 0.5rem;
+    flex: 1 1 calc(33.33% - 0.5rem);
+    min-width: 110px;
   }
 }
 
