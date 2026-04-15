@@ -811,6 +811,7 @@ defineExpose({
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scaleX(-1);
   background: $video-text-primary;
 }
 
@@ -820,6 +821,8 @@ defineExpose({
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
   pointer-events: none;
 }
 

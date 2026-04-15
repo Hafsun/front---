@@ -866,6 +866,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scaleX(-1);
   transition: all 0.3s ease;
 }
 
@@ -875,6 +876,8 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
   pointer-events: none;
 }
 
