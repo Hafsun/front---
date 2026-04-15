@@ -80,8 +80,9 @@
                 <div class="resources-grid">
                     <div v-for="(item, index) in smartResources" :key="index" class="resource-card" :style="{
                         background: `linear-gradient(145deg, ${item.lightColor}, #ffffff)`,
-                        borderColor: item.themeColor + '20'
-                    }">
+                        borderColor: item.themeColor + '20',
+                        cursor: 'pointer'
+                    }" @click="openPlanDetail(item)">
                         <!-- 卡片头部 -->
                         <div class="resource-card-header">
                             <div class="card-icon" :style="{ backgroundColor: item.themeColor }">
@@ -96,10 +97,6 @@
                                         item.difficulty === 'intermediate' ? '进阶级' : '专家级' }}
                                 </div>
                             </div>
-
-                            <button class="toggle-details-btn" @click="toggleDetails(index)" aria-label="展开详情">
-                                <span :class="showDetails[index] ? 'ChevronUp' : 'ChevronDown' " class="icon" />
-                            </button>
                         </div>
 
                         <!-- 卡片内容 -->
@@ -107,70 +104,120 @@
                             <div class="core-advice">
                                 <p>{{ item.coreAdvice }}</p>
                             </div>
-
-                            <!-- 展开内容 -->
-                            <div class="expanded-content" :class="{ 'expanded': showDetails[index] }">
-                                <!-- 学习路径 -->
-                                <div class="content-section learning-path">
-                                    <h4 class="section-title">学习路径</h4>
-                                    <ul class="path-steps">
-                                        <li v-for="(step, sIdx) in item.learningSteps" :key="sIdx" class="path-step">
-                                            <div class="step-number" :style="{ backgroundColor: item.themeColor }">{{
-                                                sIdx + 1 }}</div>
-                                            <p>{{ step }}</p>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <!-- 推荐资源 -->
-                                <div class="content-section resources">
-                                    <h4 class="section-title">推荐资源</h4>
-                                    <div class="resources-list">
-                                        <a v-for="(resource, rIdx) in item.learningResources" :key="rIdx"
-                                            :href="resource.url" target="_blank" class="resource-item"
-                                            @click.prevent="handleResourceClick(resource.url)">
-                                            <div class="resource-type-icon"
-                                                :style="{ backgroundColor: item.themeColor + '10' }">
-                                                <span :class="resource.type === 'video' ? 'Video' :
-                                                    resource.type === 'article' ? 'FileText' : 'Book' " class="icon" />
-                                            </div>
-                                            <div class="resource-info">
-                                                <h5>{{ resource.name }}</h5>
-                                                <p class="resource-meta">{{ resource.duration }} · {{ resource.source }}
-                                                </p>
-                                            </div>
-                                            <span class="arrow-icon">
-                                                <!-- 这里暂时用 span 代替图标，你可以自行替换 -->
-                                                →
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- 行动按钮 -->
-                                <div class="card-actions">
-                                    <button class="start-learning-btn"
-                                        :style="{ borderColor: item.themeColor, color: item.themeColor }"
-                                        @click="startLearning(item)">
-                                        <span class="icon">
-                                            <!-- 这里暂时用 span 代替图标，你可以自行替换 -->
-                                            ▶️
-                                        </span>
-                                        开始学习
-                                    </button>
-
-                                    <button class="save-resource-btn" :class="{ saved: item.saved }"
-                                        :style="{ color: item.saved ? item.themeColor : '' }"
-                                        @click="saveResource(item)">
-                                        <span :class="item.saved ? 'CheckCircle' : 'BookmarkPlus' " class="icon" />
-                                        <span>{{ item.saved ? '已收藏' : '收藏' }}</span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <!-- 详细方案弹窗 -->
+            <el-dialog
+                v-model="dialogVisible"
+                title="定制提升方案详情"
+                width="65%"
+                class="plan-detail-dialog"
+                destroy-on-close
+                align-center
+            >
+                <div v-if="currentPlan" class="plan-detail-content">
+                    <div class="plan-header" :style="{ backgroundColor: currentPlan.lightColor, borderColor: currentPlan.themeColor }">
+                        <div class="header-icon" :style="{ backgroundColor: currentPlan.themeColor }">
+                            <span :class="currentPlan.iconComponent" class="icon" />
+                        </div>
+                        <div class="header-info">
+                            <h3>{{ currentPlan.aspect }}</h3>
+                            <p>{{ currentPlan.coreAdvice }}</p>
+                        </div>
+                        <div class="difficulty-badge" :style="{ backgroundColor: currentPlan.themeColor + '15', color: currentPlan.themeColor }">
+                            {{ currentPlan.difficulty === 'beginner' ? '入门级' :
+                            currentPlan.difficulty === 'intermediate' ? '进阶级' : '专家级' }}
+                        </div>
+                    </div>
+
+                    <div class="plan-body">
+                        <!-- 学习路线 -->
+                        <div class="plan-section">
+                            <h4 class="section-title">
+                                <span class="icon">📍</span> 学习路线
+                            </h4>
+                            <el-steps direction="vertical" :active="currentPlan.learningSteps.length" class="custom-steps">
+                                <el-step v-for="(step, idx) in currentPlan.learningSteps" :key="idx" :title="'阶段 ' + (idx + 1)">
+                                    <template #description>
+                                        <div class="step-desc">{{ step }}</div>
+                                    </template>
+                                </el-step>
+                            </el-steps>
+                        </div>
+
+                        <!-- 技术栈与行业经验并排 -->
+                        <div class="plan-row">
+                            <div class="plan-section half">
+                                <h4 class="section-title">
+                                    <span class="icon">💻</span> 核心技术栈
+                                </h4>
+                                <div class="tech-stack-tags">
+                                    <el-tag v-for="(tech, idx) in currentPlan.techStack" :key="idx" 
+                                        :color="currentPlan.lightColor" 
+                                        :style="{ color: currentPlan.themeColor, borderColor: currentPlan.themeColor + '40' }" 
+                                        class="tech-tag"
+                                        effect="plain"
+                                        round>
+                                        {{ tech }}
+                                    </el-tag>
+                                </div>
+                            </div>
+
+                            <div class="plan-section half">
+                                <h4 class="section-title">
+                                    <span class="icon">🏢</span> 行业经验解析
+                                </h4>
+                                <div class="experience-cards">
+                                    <div v-for="(exp, idx) in currentPlan.industryExperience" :key="idx" class="exp-card">
+                                        <div class="exp-title">{{ exp.title }}</div>
+                                        <div class="exp-desc">{{ exp.desc }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 推荐资源 -->
+                        <div class="plan-section">
+                            <h4 class="section-title">
+                                <span class="icon">📚</span> 推荐学习资源
+                            </h4>
+                            <div class="resources-grid-small">
+                                <a v-for="(resource, rIdx) in currentPlan.learningResources" :key="rIdx"
+                                    :href="resource.url" target="_blank" class="resource-item"
+                                    @click.prevent="handleResourceClick(resource.url)">
+                                    <div class="resource-type-icon"
+                                        :style="{ backgroundColor: currentPlan.themeColor + '10', color: currentPlan.themeColor }">
+                                        <span :class="resource.type === 'video' ? 'Video' :
+                                            resource.type === 'article' ? 'FileText' : 'Book' " class="icon" />
+                                    </div>
+                                    <div class="resource-info">
+                                        <h5>{{ resource.name }}</h5>
+                                        <p class="resource-meta">{{ resource.duration }} · {{ resource.source }}
+                                        </p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="dialogVisible = false">关闭</el-button>
+                        <el-button :style="{ color: currentPlan?.saved ? currentPlan.themeColor : '' }" @click="saveResource(currentPlan)">
+                            {{ currentPlan?.saved ? '已收藏' : '收藏方案' }}
+                        </el-button>
+                        <el-button type="primary" 
+                            :style="{ backgroundColor: currentPlan?.themeColor, borderColor: currentPlan?.themeColor }"
+                            @click="startLearning(currentPlan)">
+                            开始学习
+                        </el-button>
+                    </div>
+                </template>
+            </el-dialog>
 
             <!-- 加载状态 -->
             <div v-if="isLoading && !showResults" class="loading-state">
@@ -206,7 +253,8 @@ const smartResources = ref([]);
 const isLoading = ref(false);
 const submitted = ref(false);
 const showResults = ref(false);
-const showDetails = ref({});
+const dialogVisible = ref(false);
+const currentPlan = ref(null);
 const textareaFocused = ref(false);
 
 // 主题配置 - 丰富色彩系统
@@ -277,6 +325,11 @@ const generateSmartResources = async () => {
                     "录制自我表述视频，分析语言冗余和逻辑断点",
                     "找同行进行模拟面试，收集反馈并迭代改进"
                 ],
+                techStack: ['结构化思维', '沟通技巧', '技术文档编写', 'UML建模'],
+                industryExperience: [
+                    { title: '大厂面试标准', desc: '在阿里/腾讯等一线大厂面试中，候选人是否能清晰表述项目难点和个人贡献占据极高权重。' },
+                    { title: '跨部门协作沟通', desc: '优秀的表达能力有助于在实际工作中降低沟通成本，推进跨团队项目落地。' }
+                ],
                 learningResources: [
                     {
                         name: "《技术面试的STAR表达法》",
@@ -314,6 +367,11 @@ const generateSmartResources = async () => {
                     "每天完成1道DP题+1道贪心题，强制限时训练",
                     "周末进行专题复盘，整理同类题目的解题套路",
                     "参与算法模拟竞赛，提升实战解题速度"
+                ],
+                techStack: ['动态规划', '贪心算法', '图论', '数据结构'],
+                industryExperience: [
+                    { title: '笔试/机试考核点', desc: '字节跳动、美团等公司笔试中，DP和贪心算法是区分候选人代码能力的试金石。' },
+                    { title: '复杂业务逻辑处理', desc: '在电商促销规则引擎、物流路径规划等业务场景中，算法功底直接决定系统性能。' }
                 ],
                 learningResources: [
                     {
@@ -353,6 +411,11 @@ const generateSmartResources = async () => {
                     "搭建个人技术博客，坚持周更技术总结文章",
                     "参与行业技术沙龙，拓展人脉并交流前沿趋势"
                 ],
+                techStack: ['LLM应用开发', 'LangChain', 'Prompt Engineering', 'RAG架构'],
+                industryExperience: [
+                    { title: 'AI赋能业务', desc: '越来越多的企业开始用大模型重构现有业务，具备AI应用开发经验的候选人更具竞争力。' },
+                    { title: '技术视野广度', desc: '面试官往往通过前沿技术的讨论，考察候选人的技术热情和持续学习能力。' }
+                ],
                 learningResources: [
                     {
                         name: "大模型应用架构设计",
@@ -380,11 +443,6 @@ const generateSmartResources = async () => {
             }
         ];
 
-        // 初始化展开状态
-        smartResources.value.forEach((_, index) => {
-            showDetails.value[index] = false;
-        });
-
         // 显示结果
         nextTick(() => {
             showResults.value = true;
@@ -404,8 +462,9 @@ const generateSmartResources = async () => {
 };
 
 // 交互方法
-const toggleDetails = (index) => {
-    showDetails.value[index] = !showDetails.value[index];
+const openPlanDetail = (item) => {
+    currentPlan.value = item;
+    dialogVisible.value = true;
 };
 
 const clearInput = () => {
@@ -823,199 +882,217 @@ $transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
                     color: #334155;
                     line-height: 1.6;
                     font-size: 0.95rem;
-                    padding-bottom: $spacing-md;
-                    border-bottom: 1px dashed #E2E8F0;
+                }
+            }
+        }
+    }
+
+    // 详细弹窗样式
+    :deep(.plan-detail-dialog) {
+        border-radius: $radius-lg;
+        overflow: hidden;
+
+        .el-dialog__header {
+            padding: 20px 24px 0;
+            margin-right: 0;
+            border-bottom: none;
+            .el-dialog__title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #1E293B;
+            }
+        }
+
+        .el-dialog__body {
+            padding: 24px;
+        }
+
+        .plan-detail-content {
+            .plan-header {
+                display: flex;
+                align-items: center;
+                gap: $spacing-md;
+                padding: $spacing-lg;
+                border-radius: $radius-md;
+                border: 1px solid;
+                margin-bottom: $spacing-xl;
+                position: relative;
+
+                .header-icon {
+                    width: 56px;
+                    height: 56px;
+                    border-radius: $radius-md;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    flex-shrink: 0;
+
+                    .icon {
+                        font-size: 1.8rem;
+                    }
                 }
 
-                .expanded-content {
-                    max-height: 0;
-                    overflow: hidden;
-                    transition: max-height 0.5s ease, padding-top 0.3s ease;
+                .header-info {
+                    flex-grow: 1;
 
-                    &.expanded {
-                        max-height: 1200px;
-                        padding-top: $spacing-lg;
+                    h3 {
+                        font-size: 1.3rem;
+                        font-weight: 700;
+                        color: #1E293B;
+                        margin: 0 0 $spacing-xs 0;
                     }
 
-                    .content-section {
-                        margin-bottom: $spacing-lg;
-
-                        &:last-child {
-                            margin-bottom: 0;
-                        }
-
-                        .section-title {
-                            font-size: 0.9rem;
-                            font-weight: 600;
-                            color: #64748B;
-                            margin: 0 0 $spacing-md 0;
-                            display: flex;
-                            align-items: center;
-
-                            &::before {
-                                content: '';
-                                display: inline-block;
-                                width: 4px;
-                                height: 4px;
-                                border-radius: 50%;
-                                background-color: currentColor;
-                                margin-right: $spacing-xs;
-                            }
-                        }
+                    p {
+                        color: #475569;
+                        margin: 0;
+                        font-size: 0.95rem;
+                        line-height: 1.5;
                     }
+                }
 
-                    .learning-path {
-                        .path-steps {
-                            list-style: none;
-                            padding: 0;
-                            margin: 0;
+                .difficulty-badge {
+                    position: absolute;
+                    top: $spacing-md;
+                    right: $spacing-md;
+                    padding: 4px 12px;
+                    border-radius: $radius-full;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                }
+            }
 
-                            .path-step {
-                                display: flex;
-                                margin-bottom: $spacing-md;
+            .plan-body {
+                .plan-section {
+                    margin-bottom: $spacing-xl;
 
-                                &:last-child {
-                                    margin-bottom: 0;
-                                }
-
-                                .step-number {
-                                    width: 24px;
-                                    height: 24px;
-                                    border-radius: 50%;
-                                    color: white;
-                                    font-size: 0.8rem;
-                                    font-weight: 600;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    margin-right: $spacing-md;
-                                    flex-shrink: 0;
-                                    margin-top: 2px;
-                                }
-
-                                p {
-                                    margin: 0;
-                                    font-size: 0.9rem;
-                                    line-height: 1.5;
-                                    color: #334155;
-                                }
-                            }
-                        }
-                    }
-
-                    .resources {
-                        .resources-list {
-                            display: flex;
-                            flex-direction: column;
-                            gap: $spacing-md;
-
-                            .resource-item {
-                                display: flex;
-                                align-items: center;
-                                padding: $spacing-md;
-                                border-radius: $radius-md;
-                                background-color: rgba(0, 0, 0, 0.02);
-                                text-decoration: none;
-                                transition: $transition-base;
-
-                                &:hover {
-                                    transform: translateX(4px);
-                                    background-color: rgba(0, 0, 0, 0.04);
-                                }
-
-                                .resource-type-icon {
-                                    width: 36px;
-                                    height: 36px;
-                                    border-radius: $radius-sm;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    margin-right: $spacing-md;
-                                    flex-shrink: 0;
-
-                                    .icon {
-                                        font-size: 1.1rem;
-                                    }
-                                }
-
-                                .resource-info {
-                                    flex-grow: 1;
-
-                                    h5 {
-                                        font-size: 0.95rem;
-                                        font-weight: 600;
-                                        color: #1E293B;
-                                        margin: 0 0 $spacing-xs 0;
-                                    }
-
-                                    .resource-meta {
-                                        font-size: 0.8rem;
-                                        color: #94A3B8;
-                                        margin: 0;
-                                    }
-                                }
-
-                                .arrow-icon {
-                                    color: #94A3B8;
-                                    font-size: 1rem;
-                                    transition: $transition-base;
-                                }
-
-                                &:hover .arrow-icon {
-                                    color: #6366F1;
-                                    transform: translateX(3px);
-                                }
-                            }
-                        }
-                    }
-
-                    .card-actions {
+                    .section-title {
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        color: #1E293B;
+                        margin: 0 0 $spacing-md 0;
                         display: flex;
-                        gap: $spacing-md;
-                        margin-top: $spacing-lg;
+                        align-items: center;
+                        gap: $spacing-xs;
 
-                        .start-learning-btn,
-                        .save-resource-btn {
-                            padding: 8px $spacing-md;
-                            border-radius: $radius-full;
-                            font-size: 0.9rem;
-                            font-weight: 500;
-                            display: inline-flex;
-                            align-items: center;
-                            gap: $spacing-xs;
-                            transition: $transition-base;
-                            cursor: pointer;
+                        .icon {
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+
+                .plan-row {
+                    display: flex;
+                    gap: $spacing-xl;
+                    margin-bottom: $spacing-xl;
+
+                    .half {
+                        flex: 1;
+                        margin-bottom: 0;
+                    }
+                }
+
+                .custom-steps {
+                    margin-left: $spacing-sm;
+                    .step-desc {
+                        font-size: 0.95rem;
+                        color: #475569;
+                        line-height: 1.5;
+                        margin-top: $spacing-xs;
+                        margin-bottom: $spacing-md;
+                    }
+                }
+
+                .tech-stack-tags {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: $spacing-sm;
+
+                    .tech-tag {
+                        font-size: 0.9rem;
+                        padding: 6px 12px;
+                        height: auto;
+                        border-width: 1px;
+                    }
+                }
+
+                .experience-cards {
+                    display: flex;
+                    flex-direction: column;
+                    gap: $spacing-md;
+
+                    .exp-card {
+                        background-color: #F8FAFC;
+                        border-radius: $radius-md;
+                        padding: $spacing-md;
+                        border-left: 4px solid #CBD5E1;
+
+                        .exp-title {
+                            font-weight: 600;
+                            color: #334155;
+                            margin-bottom: $spacing-xs;
+                            font-size: 0.95rem;
                         }
 
-                        .start-learning-btn {
-                            background-color: transparent;
-                            border: 1px solid;
-
-                            &:hover {
-                                background-color: rgba(99, 102, 241, 0.05);
-                            }
-
-                            .icon {
-                                font-size: 1rem;
-                            }
-                        }
-
-                        .save-resource-btn {
-                            background-color: transparent;
-                            border: 1px solid transparent;
+                        .exp-desc {
                             color: #64748B;
+                            font-size: 0.9rem;
+                            line-height: 1.5;
+                        }
+                    }
+                }
 
-                            &:hover {
-                                background-color: rgba(99, 102, 241, 0.05);
-                                color: #6366F1;
-                            }
+                .resources-grid-small {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                    gap: $spacing-md;
 
-                            &.saved {
-                                font-weight: 600;
-                            }
+                    .resource-item {
+                        display: flex;
+                        align-items: center;
+                        padding: $spacing-md;
+                        border-radius: $radius-md;
+                        background-color: #F8FAFC;
+                        text-decoration: none;
+                        transition: $transition-base;
+                        border: 1px solid transparent;
+
+                        &:hover {
+                            background-color: white;
+                            border-color: #E2E8F0;
+                            box-shadow: $shadow-sm;
+                            transform: translateY(-2px);
+                        }
+
+                        .resource-type-icon {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: $radius-sm;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-right: $spacing-md;
+                            flex-shrink: 0;
 
                             .icon {
-                                font-size: 1rem;
+                                font-size: 1.2rem;
+                            }
+                        }
+
+                        .resource-info {
+                            flex-grow: 1;
+
+                            h5 {
+                                font-size: 0.95rem;
+                                font-weight: 600;
+                                color: #1E293B;
+                                margin: 0 0 $spacing-xs 0;
+                            }
+
+                            .resource-meta {
+                                font-size: 0.8rem;
+                                color: #64748B;
+                                margin: 0;
                             }
                         }
                     }
