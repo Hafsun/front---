@@ -49,7 +49,7 @@
         </el-sub-menu>
         <el-menu-item index="/home/reports">
           <el-icon class="menu-icon"><DataAnalysis /></el-icon>
-          <template #title><span class="menu-text">报告分析</span></template>
+          <template #title><span class="menu-text">报告管理</span></template>
         </el-menu-item>
         <el-menu-item index="/home/resume-generator">
           <el-icon class="menu-icon"><DocumentCopy /></el-icon>

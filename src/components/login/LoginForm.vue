@@ -149,7 +149,7 @@
         </div>
         <!-- 右侧覆盖面板内容 -->
         <div class="overlay-panel overlay-right">
-          <h1 class="overlay-title">欢迎来到数面融合！</h1>
+          <h1 class="overlay-title">欢迎来到码上通关！</h1>
           <p class="overlay-text">登陆后开始您的智能面试之旅。</p>
           <button @click="switchToRegister" class="btn btn-outline">
             注册
