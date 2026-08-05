@@ -51,10 +51,6 @@
           <el-icon class="menu-icon"><DataAnalysis /></el-icon>
           <template #title><span class="menu-text">报告管理</span></template>
         </el-menu-item>
-        <el-menu-item index="/home/resume-generator">
-          <el-icon class="menu-icon"><DocumentCopy /></el-icon>
-          <template #title><span class="menu-text">简历生成</span></template>
-        </el-menu-item>
         <el-menu-item index="/home/settings">
           <el-icon class="menu-icon"><Setting /></el-icon>
           <template #title><span class="menu-text">设置</span></template>

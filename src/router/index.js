@@ -110,12 +110,6 @@ const routes = [
         meta: { title: "系统设置" },
       },
       {
-        path: "resume-generator",
-        name: "resume-generator",
-        component: () => import("../views/ResumeGeneratorView.vue"),
-        meta: { title: "简历生成器" }
-      },
-      {
         path: "question-bank",
         name: "question-bank",
         component: () => import("../views/QuestionBankView.vue"),

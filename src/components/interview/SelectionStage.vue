@@ -6,7 +6,6 @@
 
       <!-- 选择内容区域 -->
       <div class="selection-content">
-        <ResumeModalSelector @create-resume="handleCreateResume" />
         <DirectionGrid />
         <CustomInputSection />
       </div>
@@ -18,7 +17,6 @@
 import SelectionHeader from './selection/SelectionHeader.vue';
 import DirectionGrid from './selection/DirectionGrid.vue';
 import CustomInputSection from './selection/CustomInputSection.vue';
-import ResumeModalSelector from './selection/ResumeModalSelector.vue';
 
 defineEmits(['proceed-to-preparation']);
 </script>

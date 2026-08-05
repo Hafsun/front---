@@ -124,12 +124,6 @@ const otherRoutes = [
     component: () => import("../views/setting/SettingsView.vue"),
     meta: { title: "系统设置" },
   },
-  {
-    path: "resume-generator",
-    name: "resume-generator",
-    component: () => import("../views/resume/ResumeGeneratorView.vue"),
-    meta: { title: "简历生成器" },
-  },
 ]
 
 routes[2].children.push(...interviewRoutes)
