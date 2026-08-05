@@ -3,53 +3,49 @@ import router from "@/router" // 确保导入了路由实例
 
 // 后端服务配置
 const serviceConfig = {
-  java: {
-    //baseURL: "https://47.96.177.180:18444/api/",
-    baseURL: "http://localhost:18080/api/",
-    timeout: 6000000,
+  go: {
+    baseURL: process.env.VUE_APP_GO_API_URL || "http://localhost:18082/api/",
+    timeout: 60000,
   },
-  python: {
-    //baseURL: "https://47.96.177.180:18443/",
-    baseURL: "http://localhost:18081/",
-    timeout: 720000000,
+  goAI: {
+    // 阶段 6 保留旧 Python REST 的无 /api URL 契约。
+    baseURL: process.env.VUE_APP_GO_AI_URL || "http://localhost:18082/",
+    timeout: 240000,
   },
 }
 
-// // 服务器环境的WebSocket配置
-// const websocketConfig = {
-//   baseURL: process.env.VUE_APP_WEBSOCKET_URL || "wss://47.96.177.180:18445/ws/chat",
-//   reconnectInterval: 3000,
-//   maxReconnectAttempts: 5,
-// }
-
-
-// // 后端服务配置
-// const serviceConfig = {
-//   java: {
-//     baseURL: "http://localhost:18080/api/",
-//     timeout: 60000,
-//   },
-//   python: {
-//     baseURL: "http://127.0.0.1:5000/",
-//     timeout: 720000,
-//   },
-// }
-
 // WebSocket服务配置
 const websocketConfig = {
-  baseURL: process.env.VUE_APP_WEBSOCKET_URL || "ws://localhost:18083/ws/chat",
+  baseURL: process.env.VUE_APP_WEBSOCKET_URL || "ws://localhost:18082/ws/chat",
   reconnectInterval: 3000,
   maxReconnectAttempts: 5,
 }
 
-// 不需要Token的接口白名单（支持正则表达式）
-const noTokenRoutes = [/login/, /register/, /forgot-password/, /reset-password/]
+// 不需要 Token 的接口使用精确路径，避免相似路径绕过认证。
+const noTokenRoutes = new Set([
+  "/login",
+  "/register",
+  "/getPassProtect",
+  "/forgotPassword",
+  "/select_of_resume/resume",
+  "/interview/report",
+  "/me/suggestion",
+])
+
+function normalizeRequestPath(url) {
+  let path = String(url || "").split(/[?#]/)[0]
+  for (const config of Object.values(serviceConfig)) {
+    if (path.startsWith(config.baseURL)) {
+      path = path.slice(config.baseURL.length)
+      break
+    }
+  }
+  return `/${path.replace(/^\/+/, "")}`
+}
 
 // 检查是否需要添加Token
 function shouldAddToken(url) {
-  // 移除baseURL，只检查相对路径
-  const relativeUrl = url.replace(new RegExp(`^(${serviceConfig.java.baseURL}|${serviceConfig.python.baseURL})`), "")
-  return !noTokenRoutes.some((pattern) => pattern.test(relativeUrl))
+  return !noTokenRoutes.has(normalizeRequestPath(url))
 }
 
 // 检查token是否有效
@@ -93,7 +89,7 @@ function handleAuthFailure() {
 
 // 创建axios实例的工厂函数
 function createService(type) {
-  const config = serviceConfig[type] || serviceConfig.java
+  const config = serviceConfig[type] || serviceConfig.go
   const service = axios.create(config)
 
   // 请求拦截器
@@ -105,7 +101,6 @@ function createService(type) {
       console.log("请求URL:", config.url)
       console.log("请求方法:", config.method)
       console.log("Token存在:", !!token)
-      console.log("Token内容:", token ? `${token.substring(0, 30)}...` : "null")
 
       // 检查是否需要token的接口
       const needsToken = shouldAddToken(config.url)
@@ -137,7 +132,6 @@ function createService(type) {
         delete config.headers["Content-Type"]
       }
 
-      console.log("最终请求头:", config.headers)
       console.log("=== 请求拦截器调试结束 ===")
       return config
     },
@@ -202,6 +196,7 @@ class WebSocketManager {
     this.messageHandlers = new Map()
     this.isConnecting = false
     this.isManualClose = false
+    this.initializationMessage = null
   }
 
   // 连接WebSocket
@@ -214,20 +209,31 @@ class WebSocketManager {
     this.isConnecting = true
     this.isManualClose = false
 
-    const wsUrl = `${websocketConfig.baseURL}`
-    console.log("正在连接WebSocket:", wsUrl)
+    const token = window.localStorage.getItem("token")
+    if (!isTokenValid(token)) {
+      this.isConnecting = false
+      handleAuthFailure()
+      return Promise.reject(new Error("WebSocket 认证令牌无效"))
+    }
+    const wsUrl = new URL(websocketConfig.baseURL)
+    wsUrl.searchParams.set("access_token", token)
+    console.log("正在连接WebSocket:", websocketConfig.baseURL)
 
     return new Promise((resolve, reject) => {
       try {
-        this.ws = new WebSocket(wsUrl)
+        this.ws = new WebSocket(wsUrl.toString())
 
         this.ws.onopen = () => {
           console.log("WebSocket连接成功")
+          const reconnected = this.reconnectAttempts > 0
           this.isConnecting = false
           this.reconnectAttempts = 0
           if (this.reconnectTimer) {
             clearTimeout(this.reconnectTimer)
             this.reconnectTimer = null
+          }
+          if (reconnected && this.initializationMessage) {
+            this.ws.send(this.initializationMessage)
           }
           resolve()
         }
@@ -235,14 +241,14 @@ class WebSocketManager {
         this.ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data)
-            console.log("收到WebSocket消息:", data)
+            console.log("收到WebSocket事件:", data?.type || "unknown")
             if (data && typeof data === "object") {
               if (onMessage) onMessage(data)
             } else {
               console.error("收到无效的WebSocket消息格式:", data)
             }
           } catch (error) {
-            console.error("解析WebSocket消息失败:", error, "原始数据:", event.data)
+            console.error("解析WebSocket消息失败:", error)
             if (onMessage) {
               onMessage({
                 type: "error",
@@ -279,12 +285,12 @@ class WebSocketManager {
   }
 
   // 安排重连
-  scheduleReconnect(sessionId, onMessage, onError, onClose) {
+  scheduleReconnect(onMessage, onError, onClose) {
     this.reconnectAttempts++
     console.log(`准备第${this.reconnectAttempts}次重连...`)
 
     this.reconnectTimer = setTimeout(() => {
-      this.connect(sessionId, onMessage, onError, onClose).catch((error) => {
+      this.connect(onMessage, onError, onClose).catch((error) => {
         console.error(`第${this.reconnectAttempts}次重连失败:`, error)
       })
     }, websocketConfig.reconnectInterval)
@@ -294,7 +300,11 @@ class WebSocketManager {
   send(message) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       const messageStr = typeof message === "string" ? message : JSON.stringify(message)
-      console.log("发送WebSocket消息:", messageStr)
+      if (message && typeof message === "object" && message.action === "init_system") {
+        this.initializationMessage = messageStr
+      }
+      const messageBytes = new Blob([messageStr]).size
+      console.log("发送WebSocket消息，字节数:", messageBytes)
       this.ws.send(messageStr)
       return true
     } else {
@@ -315,6 +325,7 @@ class WebSocketManager {
       this.ws = null
     }
     this.reconnectAttempts = 0
+    this.initializationMessage = null
     console.log("WebSocket连接已手动关闭")
   }
 
@@ -329,10 +340,10 @@ class WebSocketManager {
   }
 }
 
-// 创建不同后端的axios实例
-const javaService = createService("java")
-const pythonService = createService("python")
+// HTTP 与 WebSocket 统一由 Go 后端承载。
+const goService = createService("go")
+const goAIService = createService("goAI")
 
 const websocketManager = new WebSocketManager()
 
-export { javaService, pythonService, websocketManager, websocketConfig }
+export { goService, goAIService, websocketManager, websocketConfig }

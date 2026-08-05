@@ -98,7 +98,7 @@
 import { ref, reactive, onMounted, computed } from 'vue';
 import { EditPen, DataLine, Trophy } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
-import { javaService } from "@/utils/request"
+import { goService } from "@/utils/request"
 
 
 
@@ -129,7 +129,7 @@ const expPercentage = computed(() => {
 const fetchUserInfo = async () => {
   try {
     console.log('开始获取用户信息...');
-    const res = await javaService.get('/ai-training/info');
+    const res = await goService.get('/ai-training/info');
     console.log('用户信息响应:', res);
     
     // 修改：后端成功码是 1，不是 200
@@ -157,7 +157,7 @@ const fetchDailyQuestion = async () => {
   dailyQuestion.value = null;
   try {
     console.log('获取每日挑战，方向:', currentDirection.value);
-    const res = await javaService.get('/ai-training/daily', { 
+    const res = await goService.get('/ai-training/daily', { 
       params: { category: currentDirection.value } 
     });
     
@@ -188,7 +188,7 @@ const fetchDailyQuestion = async () => {
 const fetchUserSkills = async () => {
   try {
     console.log('获取用户技能图谱...');
-    const res = await javaService.get('/ai-training/skills');
+    const res = await goService.get('/ai-training/skills');
     console.log('技能响应:', res.data);
     
     // 修改：后端成功码是 1，不是 200
@@ -209,7 +209,7 @@ const fetchUserSkills = async () => {
 const fetchLeaderboard = async () => {
   try {
     console.log('获取排行榜...');
-    const res = await javaService.get('/ai-training/leaderboard');
+    const res = await goService.get('/ai-training/leaderboard');
     console.log('排行榜响应:', res.data);
     
     // 修改：后端成功码是 1，不是 200

@@ -1,26 +1,29 @@
 // user.js
-import { javaService } from "@/utils/request"
+import { goAIService, goService } from "@/utils/request"
 
 // 登录接口（不需要Token）
 export const login = (data) => {
-  return javaService.post("/login", data)
+  return goService.post("/login", data)
 }
 
 // 注册接口（不需要Token）
 export const register = (data) => {
-  return javaService.post("/register", data)
+  return goService.post("/register", {
+    username: data.username,
+    password: data.password,
+    passProtect: data.passProtect || data.securityQuestion,
+    passProtectAnswer: data.passProtectAnswer || data.securityAnswer,
+  })
 }
-
-
 
 // 获取密保问题接口（不需要Token）
 export const getPassProtect = (data) => {
-  return javaService.post("/getPassProtect", { username: data.username })
+  return goService.post("/getPassProtect", { username: data.username })
 }
 
 // 忘记密码接口（不需要Token）
 export const forgotPassword = (data) => {
-  return javaService.post("/forgotPassword", {
+  return goService.post("/forgotPassword", {
     username: data.username,
     passProtectAnswer: data.passProtectAnswer,
     newPassword: data.newPassword,
@@ -29,15 +32,15 @@ export const forgotPassword = (data) => {
 
 // 获取用户信息接口（需要Token）
 export const getUserInfo = () => {
-  return javaService.get("/user/getUserInfo") // 实际后端接口
+  return goService.get("/user/getUserInfo")
 }
-
 
 // 更新用户信息接口（需要Token）
 export const updateUserInfo = (data) => {
   console.log("开始发送请求：" + JSON.stringify(data, null, 2))
-
-  return javaService.post("/user/updateUserInfo", data) // 实际后端接口
+  const payload = { ...data }
+  delete payload.username // 用户身份只由 JWT 决定
+  return goService.post("/user/updateUserInfo", payload)
 }
 
 // 🔥 修复：上传头像接口（需要Token）
@@ -55,7 +58,7 @@ export const uploadAvatar = (file) => {
   }
 
   // 🔥 关键修复：不要手动设置 Content-Type，让 axios 和浏览器自动处理
-  return javaService
+  return goService
     .post("/user/updateUserPicture", formData)
     .then((response) => {
       console.log("头像上传成功响应:", response)
@@ -70,15 +73,14 @@ export const uploadAvatar = (file) => {
 
 // 获取智能学习资源接口（需要Token）
 export const getSmartLearningResources = (data) => {
-  return javaService.post("/me/suggestion", {
+  return goAIService.post("/me/suggestion", {
     problem: data.interviewDefects,
   })
 }
 
 // 修改密码接口（真实实现）
 export const changePassword = (data) => {
-  return javaService.post("/user/updatePassword", {
-    username: data.username,
+  return goService.post("/user/updatePassword", {
     oldPassword: data.oldPassword,
     newPassword: data.newPassword,
   })
@@ -86,31 +88,9 @@ export const changePassword = (data) => {
 
 // 修改密保问题和答案接口（真实实现）
 export const changeSecurityQuestion = (data) => {
-  return javaService.post("/user/updateUserPasswordProtect", {
-    username: data.username,
+  return goService.post("/user/updateUserPasswordProtect", {
     password: data.accountPassword,
     passProtect: data.newQuestion,
     passProtectAnswer: data.newAnswer,
   })
-}
-
-
-// 获取详细报告
-export const getDetailReport = (data) => {
-  return javaService.post(`/report/getReport/${data.reportId}`)
-}
-
-// 获取面试信息列表接口（新增）
-export const getReportList = (data) => {
-  return javaService.post("/report/interviewList", {
-    username: data.username,
-    page: data.page || 1,
-    pageSize: data.pageSize || 10,
-  })
-}
-
-
-// 删除面试记录接口（新增）
-export const deleteInterviewRecord = (data) => {
-  return javaService.delete(`/report/delete/${data.interviewId}`)
 }

@@ -1,23 +1,6 @@
-import { pythonService } from "@/utils/request"
-import { javaService } from "@/utils/request"
+import { goAIService, goService } from "@/utils/request"
 
 export const interviewApi = {
-  /**
-   * 开始面试接口 - 改进版本，添加超时和取消支持
-   */
-  startInterview: (data, options = {}) => {
-    console.log("请求已发送", data)
-    return pythonService({
-      url: "/interview/first_ques",
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: data,
-      timeout: options.timeout || 10000, // 默认10秒超时
-      signal: options.signal, // 支持AbortController
-    })
-  },
-
-
   /**
    * 结束面试接口 - 改进版本，支持更完整的数据格式
    */
@@ -83,7 +66,7 @@ export const interviewApi = {
     console.log("- 小方向数量:", requestData.minorDirection?.length || 0)
     console.log("- 岗位:", requestData.position)
 
-    return pythonService({
+    return goAIService({
       url: "/interview/report",
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -107,15 +90,17 @@ export const interviewApi = {
   },
 
   /**
-   * 保存报告到Java后端接口 - 改进版本
+   * 保存报告到 Go 后端接口
    */
-  saveReportToJavaBackend: (reportPayload, options = {}) => {
-    console.log("正在发送报告到Java后端:", JSON.stringify(reportPayload, null, 2))
-    return javaService({
+  saveReport: (reportPayload, options = {}) => {
+    console.log("正在发送报告到 Go 后端:", JSON.stringify(reportPayload, null, 2))
+    const payload = { ...reportPayload }
+    delete payload.username
+    return goService({
       url: "/report/save",
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      data: reportPayload,
+      data: payload,
       timeout: options.timeout || 15000, // 默认15秒超时
       signal: options.signal,
     })
@@ -126,11 +111,14 @@ export const interviewApi = {
    */
   getInterviewList: (params, options = {}) => {
     console.log("获取面试报告列表，参数：", JSON.stringify(params))
-    return javaService({
+    return goService({
       url: "/report/interviewList",
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      data: params,
+      data: {
+        page: params.page ?? params.pageNum ?? 1,
+        pageSize: params.pageSize ?? 10,
+      },
       timeout: options.timeout || 10000,
       signal: options.signal,
     })
@@ -141,7 +129,7 @@ export const interviewApi = {
    */
   deleteReport: (reportId, options = {}) => {
     console.log("删除面试报告，ID：", reportId)
-    return javaService({
+    return goService({
       url: `/report/delete/${reportId}`,
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -155,7 +143,7 @@ export const interviewApi = {
    */
   getDetailReport: (reportId, options = {}) => {
     console.log("获取详细报告，ID：", reportId)
-    return javaService({
+    return goService({
       url: `/report/getReport/${reportId}`,
       method: "GET",
       headers: { "Content-Type": "application/json" },

@@ -194,7 +194,7 @@ import {
   EditPen, Delete, Grid, List, TakeawayBox, Cpu, MagicStick 
 } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { javaService } from '@/utils/request'
+import { goService } from '@/utils/request'
 
 // --- 状态变量 ---
 const searchQuery = ref('')
@@ -223,7 +223,7 @@ const fetchKnowledgeList = async () => {
   try {
     console.log('=== 开始获取知识库列表 ===')
     
-    const response = await javaService.get('/knowledge/list')
+    const response = await goService.get('/knowledge/list')
     const result = response.data
     
     if (result.code === 1) {
@@ -302,7 +302,7 @@ const confirmUpload = async () => {
     formData.append('tags', JSON.stringify(uploadForm.selectedTags))
 
     try {
-      const response = await javaService.post('/knowledge/upload', formData)
+      const response = await goService.post('/knowledge/upload', formData)
       
       // 获取后端返回的 Result 对象
       const result = response.data
@@ -359,7 +359,7 @@ const confirmUpload = async () => {
 // --- 操作函数 ---
 const handleDelete = (item) => {
   ElMessageBox.confirm(`确定删除 ${item.name} 吗？`, '警告', { type: 'warning' }).then(async () => {
-    await javaService.delete(`/knowledge/list/${item.id}`)
+    await goService.delete(`/knowledge/list/${item.id}`)
     ElMessage.success('已删除')
     fetchKnowledgeList()
   })
@@ -379,7 +379,7 @@ const handleEdit = (item) => {
     // ✅ 将 tags 数组转换为 JSON 字符串，与上传时保持一致
     const tagsString = JSON.stringify(item.tags)
     
-    await javaService.put(`/knowledge/update/${item.id}`, { 
+    await goService.put(`/knowledge/update/${item.id}`, { 
       name: `${value}.${ext}`, 
       tags: tagsString  // 传递 JSON 字符串，而不是数组
     })

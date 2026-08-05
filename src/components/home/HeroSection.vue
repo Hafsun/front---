@@ -2,7 +2,7 @@
   <div class="hero-section" @mouseenter="animateHero" @mouseleave="resetHero">
     <div class="hero-container">
       <div class="hero-content" :class="{ 'hero-animate': isHeroAnimated }">
-        <h1 class="hero-title">多模态面试模拟与技能精进平台</h1>
+        <h1 class="hero-title">多模态拟真面试与技能精进平台</h1>
         <p class="hero-subtitle">面向高校学生的AI面试助手</p>
         <p class="hero-description">
           通过语音、视频、文本多维度分析，构建智能化、沉浸式面试评测智能体，

@@ -433,7 +433,7 @@ import {
   Reading, Loading
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-// import { javaService } from '@/utils/request' // 不再直接使用，通过 store 调用
+// 文件详情通过题库 store 统一访问 Go 后端。
 import * as XLSX from 'xlsx'
 import { questionBankStore } from '@/stores/questionBank' // 引入你的 store
 

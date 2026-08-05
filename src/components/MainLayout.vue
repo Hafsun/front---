@@ -105,19 +105,20 @@ onMounted(() => {
   onResize()
   initUserInfo()
 
-    // 2. 脚本加载逻辑移到onMounted回调内部（核心修正！）
-  const script = document.createElement('script')
-  script.src = 'http://4a399e1d.r12.cpolar.top/chat/api/embed?protocol=http&host=4a399e1d.r12.cpolar.top&token=13389f5d63dd0a19'
-  script.async = true
-  script.defer = true
+  // 聊天组件地址可能包含访问令牌，只允许从项目级环境变量注入。
+  const chatWidgetUrl = process.env.VUE_APP_CHAT_WIDGET_URL
+  if (chatWidgetUrl) {
+    const script = document.createElement('script')
+    script.src = chatWidgetUrl
+    script.async = true
+    script.defer = true
 
+    script.onload = () => {
+      console.log('✅ 聊天组件脚本加载成功！')
+    }
 
-  // 成功加载提示（可选）
-  script.onload = () => {
-    console.log('✅ 聊天组件脚本加载成功！')
+    document.body.appendChild(script)
   }
-
-  document.body.appendChild(script)
 }
 )
 

@@ -316,7 +316,7 @@ export const interviewStore = reactive({
   },
 
   /**
-   * 设置报告请求数据，用于后续保存到Java后端
+   * 设置报告请求数据，用于后续保存到 Go 后端
    */
   setReportRequestData(requestData) {
     this.reportRequestData = requestData
@@ -660,10 +660,10 @@ export const interviewStore = reactive({
   },
 
   /**
-   * 新增：格式化数据为Java后端需要的格式
+   * 格式化报告保存接口需要的数据
    */
-  formatDataForJavaBackend() {
-    console.log("开始格式化数据为Java后端格式")
+  formatDataForBackend() {
+    console.log("开始格式化报告保存数据")
     console.log("原始finalReportData:", JSON.stringify(this.finalReportData, null, 2))
     console.log("selectedDirection:", this.selectedDirection)
     console.log("selectedTargetPosition:", this.selectedTargetPosition)
@@ -766,18 +766,18 @@ export const interviewStore = reactive({
   },
 
   /**
-   * 新增：保存报告到Java后端
+   * 保存报告到 Go 后端
    */
-  async saveReportToJavaBackend() {
+  async saveReport() {
     try {
-      console.log("开始保存报告到Java后端")
+      console.log("开始保存报告到 Go 后端")
 
-      const formattedData = this.formatDataForJavaBackend()
+      const formattedData = this.formatDataForBackend()
       if (!formattedData) {
         throw new Error("数据格式化失败")
       }
 
-      console.log("即将发送到Java后端的数据:")
+      console.log("即将发送报告数据:")
       console.log("- 数据大小:", JSON.stringify(formattedData).length, "字符")
       console.log("- 数据结构验证:")
       console.log("  * username存在:", !!formattedData.username)
@@ -787,24 +787,24 @@ export const interviewStore = reactive({
       // 导入API
       const { interviewApi } = await import("@/api/interview.js")
 
-      console.log("调用interviewApi.saveReportToJavaBackend...")
-      const response = await interviewApi.saveReportToJavaBackend(formattedData)
+      console.log("调用 interviewApi.saveReport...")
+      const response = await interviewApi.saveReport(formattedData)
 
-      console.log("Java后端API响应:response", response)
+      console.log("Go 后端报告保存响应已返回")
       console.log("- 响应信息:", response.data?.msg)
       console.log("- 响应数据:", response.data.data)
       console.log("- 响应状态:", response.data?.code)
       if (response?.data?.code === 1) {
-        console.log("Java后端保存成功:", response)
+        console.log("Go 后端保存成功")
         return {
           success: true,
           data: response,
           message: "报告保存成功",
         }
       }
-      throw new Error("Java后端返回错误")
+      throw new Error("Go 后端返回错误")
     } catch (error) {
-      console.error("Java后端保存失败 - 详细错误信息:")
+      console.error("Go 后端保存失败 - 详细错误信息:")
       console.error("- 错误类型:", error.constructor.name)
       console.error("- 错误消息:", error.message)
       console.error("- 错误堆栈:", error.stack)

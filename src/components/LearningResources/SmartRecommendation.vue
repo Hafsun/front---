@@ -247,6 +247,7 @@
 <script setup>
 import { ref, nextTick } from 'vue';
 import { ElMessage, ElNotification } from 'element-plus';
+import { getSmartLearningResources } from '@/api/user';
 // 状态管理
 const interviewDefects = ref('');
 const smartResources = ref([]);
@@ -295,6 +296,30 @@ const iconComponents = {
     'Users': 'Users'
 };
 
+// 将阶段 6 的固定建议 Schema 映射到现有卡片结构，不改变页面展示组件。
+const mapSuggestionToPlan = (result) => ({
+    aspect: result.aspect,
+    themeColor: themeConfig[0].themeColor,
+    lightColor: themeConfig[0].lightColor,
+    iconComponent: iconComponents[themeConfig[0].icon],
+    difficulty: 'intermediate',
+    coreAdvice: result.suggestions[0],
+    learningSteps: result.learningDirections,
+    techStack: [],
+    industryExperience: result.suggestions.slice(1).map((suggestion, index) => ({
+        title: `补充建议 ${index + 1}`,
+        desc: suggestion
+    })),
+    learningResources: result.learningResources.map((resource) => ({
+        name: resource,
+        type: 'article',
+        duration: '在线资源',
+        source: new URL(resource).hostname,
+        url: resource
+    })),
+    saved: false
+});
+
 // 生成推荐
 const generateSmartResources = async () => {
     if (!interviewDefects.value.trim()) {
@@ -307,141 +332,13 @@ const generateSmartResources = async () => {
     showResults.value = false;
 
     try {
-        // 模拟API请求
-        await new Promise(resolve => setTimeout(resolve, 1800));
-
-        // 生成推荐数据
-        smartResources.value = [
-            {
-                aspect: '技术表达能力提升',
-                themeColor: themeConfig[0].themeColor,
-                lightColor: themeConfig[0].lightColor,
-                iconComponent: iconComponents[themeConfig[0].icon],
-                difficulty: 'beginner',
-                coreAdvice: '采用STAR法则（情境-任务-行动-结果）结构化表达技术项目，每周进行2次模拟面试练习',
-                learningSteps: [
-                    "学习STAR法则核心原理，理解结构化表达的优势",
-                    "选择3个过往项目，用STAR框架重新梳理表述",
-                    "录制自我表述视频，分析语言冗余和逻辑断点",
-                    "找同行进行模拟面试，收集反馈并迭代改进"
-                ],
-                techStack: ['结构化思维', '沟通技巧', '技术文档编写', 'UML建模'],
-                industryExperience: [
-                    { title: '大厂面试标准', desc: '在阿里/腾讯等一线大厂面试中，候选人是否能清晰表述项目难点和个人贡献占据极高权重。' },
-                    { title: '跨部门协作沟通', desc: '优秀的表达能力有助于在实际工作中降低沟通成本，推进跨团队项目落地。' }
-                ],
-                learningResources: [
-                    {
-                        name: "《技术面试的STAR表达法》",
-                        type: "article",
-                        duration: "8分钟阅读",
-                        source: "Medium",
-                        url: "https://medium.com"
-                    },
-                    {
-                        name: "模拟面试实战演练",
-                        type: "video",
-                        duration: "45分钟课程",
-                        source: "B站",
-                        url: "https://bilibili.com"
-                    },
-                    {
-                        name: "《程序员的职业素养》",
-                        type: "book",
-                        duration: "10小时阅读",
-                        source: "豆瓣读书",
-                        url: "https://douban.com"
-                    }
-                ],
-                saved: false
-            },
-            {
-                aspect: '算法基础巩固',
-                themeColor: themeConfig[3].themeColor,
-                lightColor: themeConfig[3].lightColor,
-                iconComponent: iconComponents[themeConfig[3].icon],
-                difficulty: 'intermediate',
-                coreAdvice: '聚焦动态规划和贪心算法两大高频考点，每天刷2道中等难度题目并总结解题模板',
-                learningSteps: [
-                    "系统学习动态规划5大经典模型（线性/区间/背包/树形/状态压缩）",
-                    "每天完成1道DP题+1道贪心题，强制限时训练",
-                    "周末进行专题复盘，整理同类题目的解题套路",
-                    "参与算法模拟竞赛，提升实战解题速度"
-                ],
-                techStack: ['动态规划', '贪心算法', '图论', '数据结构'],
-                industryExperience: [
-                    { title: '笔试/机试考核点', desc: '字节跳动、美团等公司笔试中，DP和贪心算法是区分候选人代码能力的试金石。' },
-                    { title: '复杂业务逻辑处理', desc: '在电商促销规则引擎、物流路径规划等业务场景中，算法功底直接决定系统性能。' }
-                ],
-                learningResources: [
-                    {
-                        name: "动态规划入门到精通",
-                        type: "video",
-                        duration: "6小时课程",
-                        source: "极客时间",
-                        url: "https://time.geekbang.org"
-                    },
-                    {
-                        name: "LeetCode高频算法题精选",
-                        type: "article",
-                        duration: "30分钟阅读",
-                        source: "力扣",
-                        url: "https://leetcode.cn"
-                    },
-                    {
-                        name: "《算法图解》",
-                        type: "book",
-                        duration: "5小时阅读",
-                        source: "人民邮电出版社",
-                        url: "https://book.douban.com"
-                    }
-                ],
-                saved: false
-            },
-            {
-                aspect: '行业前沿知识拓展',
-                themeColor: themeConfig[2].themeColor,
-                lightColor: themeConfig[2].lightColor,
-                iconComponent: iconComponents[themeConfig[2].icon],
-                difficulty: 'advanced',
-                coreAdvice: '建立AI领域知识图谱，重点关注大模型应用落地案例，每周输出1篇技术博客总结',
-                learningSteps: [
-                    "订阅3个权威AI技术周刊（The Batch/AI Research Newsletter等）",
-                    "每周深入研究1个大模型应用案例，分析技术选型和实现难点",
-                    "搭建个人技术博客，坚持周更技术总结文章",
-                    "参与行业技术沙龙，拓展人脉并交流前沿趋势"
-                ],
-                techStack: ['LLM应用开发', 'LangChain', 'Prompt Engineering', 'RAG架构'],
-                industryExperience: [
-                    { title: 'AI赋能业务', desc: '越来越多的企业开始用大模型重构现有业务，具备AI应用开发经验的候选人更具竞争力。' },
-                    { title: '技术视野广度', desc: '面试官往往通过前沿技术的讨论，考察候选人的技术热情和持续学习能力。' }
-                ],
-                learningResources: [
-                    {
-                        name: "大模型应用架构设计",
-                        type: "video",
-                        duration: "90分钟演讲",
-                        source: "InfoQ",
-                        url: "https://infoq.cn"
-                    },
-                    {
-                        name: "AI产品落地实践指南",
-                        type: "article",
-                        duration: "15分钟阅读",
-                        source: "知乎专栏",
-                        url: "https://zhihu.com"
-                    },
-                    {
-                        name: "《大模型时代》",
-                        type: "book",
-                        duration: "7小时阅读",
-                        source: "中信出版社",
-                        url: "https://book.douban.com"
-                    }
-                ],
-                saved: false
-            }
-        ];
+        const { data } = await getSmartLearningResources({
+            interviewDefects: interviewDefects.value.trim()
+        });
+        if (data?.statusCode !== 1 || !data.response) {
+            throw new Error(data?.response || '模型未返回有效学习建议');
+        }
+        smartResources.value = [mapSuggestionToPlan(data.response)];
 
         // 显示结果
         nextTick(() => {

@@ -243,7 +243,7 @@ const handleWebSocketMessage = (message) => {
       handleEmotionUpdate(message.data);
       break;
     case 'error': {
-      const errorMessage = message.data?.message || message.data?.error || message.data || '未知服务器错误';
+      const errorMessage = message.message || message.data?.message || message.data?.error || message.data || '未知服务器错误';
       console.error('服务器错误:', errorMessage);
       break;
     }

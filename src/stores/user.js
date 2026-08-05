@@ -154,10 +154,7 @@ export const useUserStore = defineStore("user", {
 
         console.log("开始调用updateBasicInfo" + JSON.stringify(updatedFields, null, 2));
         
-        const { data } = await apiUpdateUserInfo({
-          username: this.userInfo.username,
-          ...updatedFields,
-        })
+        const { data } = await apiUpdateUserInfo(updatedFields)
 
         console.log("updateBasicInfo:data" + JSON.stringify(data, null, 2));
         
@@ -189,7 +186,7 @@ export const useUserStore = defineStore("user", {
         
         const { data } = await apiUploadAvatar(file)
         if (data.code === 1 && data.data) {
-          this.userInfo.pictureUrl = data.data.pictureUrl // 注意这里使用 pictureUrl
+          this.userInfo.pictureUrl = data.data
           this.lastFetchTime = Date.now()
           localStorage.setItem("userInfo", JSON.stringify(this.userInfo))
           return true

@@ -128,7 +128,7 @@
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { Timer, Document, Edit, Cpu, Loading, ChatDotRound, Key } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { javaService } from "@/utils/request"
+import { goService } from "@/utils/request"
 
 const props = defineProps({
   questionId: { type: Number, required: true }
@@ -178,7 +178,7 @@ const fetchQuestionDetail = async () => {
   loading.value = true;
   try {
     console.log('获取题目详情，ID:', props.questionId);
-    const res = await javaService.get(`/ai-training/detail/${props.questionId}`);
+    const res = await goService.get(`/ai-training/detail/${props.questionId}`);
     console.log('题目详情响应:', res.data);
     
     // 后端成功码是 1
@@ -240,7 +240,7 @@ const submitAnswer = () => {
     
     try {
       // 调用后端提交接口
-      const res = await javaService.post('/ai-training/submit', {
+      const res = await goService.post('/ai-training/submit', {
         questionId: props.questionId,
         userAnswer: answerText.value
       });

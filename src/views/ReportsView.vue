@@ -248,7 +248,7 @@ const handleSaveReport = async () => {
   
   try {
     isSaving.value = true
-    const result = await interviewStore.saveReportToJavaBackend()
+    const result = await interviewStore.saveReport()
     
     if (result.success) {
       ElMessage.success('报告保存成功！')
@@ -438,7 +438,7 @@ const viewReport = async (report) => {
     
     let errorMessage = '查看报告失败'
     if (error.message.includes('网络连接失败')) {
-      errorMessage = 'Java后端服务连接失败，请确认服务是否启动'
+      errorMessage = 'Go 后端服务连接失败，请确认服务是否启动'
     } else {
       errorMessage = `查看报告失败: ${error.message}`
     }
@@ -490,7 +490,7 @@ const fetchReports = async () => {
     }
 
     console.log('[ReportsView] 开始获取报告列表，参数:', params)
-    console.log('[ReportsView] Java后端地址:', 'http://localhost:18080/api/')
+    console.log('[ReportsView] Go 后端地址:', 'http://localhost:18082/api/')
     
     const response = await interviewApi.getInterviewList(params)
     
@@ -538,7 +538,7 @@ const fetchReports = async () => {
     
     let errorMessage = '获取报告列表失败'
     if (error.message.includes('网络连接失败')) {
-      errorMessage = 'Java后端服务连接失败，请确认服务是否启动 (localhost:18080)'
+      errorMessage = 'Go 后端服务连接失败，请确认服务是否启动 (localhost:18082)'
     } else if (error.message.includes('API接口不存在')) {
       errorMessage = 'API接口不存在，请检查后端路由配置'
     } else {

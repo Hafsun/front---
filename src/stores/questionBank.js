@@ -1,6 +1,6 @@
 // src/stores/questionBank.js
 import { reactive, computed } from "vue"
-import { javaService } from '@/utils/request'; // 您的API请求服务
+import { goService } from '@/utils/request'; // 阶段 4 题库接口统一由 Go 接管
 import { ElMessage } from 'element-plus';
 
 // 定义题库状态的响应式存储
@@ -85,7 +85,7 @@ export const questionBankStore = reactive({
       // ----------------------------------------------------
       // 后端交互点 1: 获取所有题库模块和文件列表
       // ----------------------------------------------------
-      const response = await javaService.get('/question-bank/list');
+      const response = await goService.get('/question-bank/list');
       const res = response.data;
 
       if (res.code === 1) {
@@ -148,7 +148,7 @@ export const questionBankStore = reactive({
       // ----------------------------------------------------
       // 后端交互点 2: 上传单个题库文件
       // ----------------------------------------------------
-      const response = await javaService.post('/question-bank/upload', formData);
+      const response = await goService.post('/question-bank/upload', formData);
       const res = response.data;
 
       if (res.code === 1) {
@@ -188,7 +188,7 @@ export const questionBankStore = reactive({
       // ----------------------------------------------------
       // 后端交互点 3: 批量上传题库文件
       // ----------------------------------------------------
-      const response = await javaService.post('/question-bank/batch-upload', formData);
+      const response = await goService.post('/question-bank/batch-upload', formData);
       const res = response.data;
 
       if (res.code === 1) {
@@ -228,8 +228,8 @@ export const questionBankStore = reactive({
       // 注意：您的后端接口 `/question-bank/${fileId}/rename` 似乎是针对重命名。
       // 如果需要同时支持重命名和移动模块，后端接口可能需要更通用或提供额外参数。
       // 我这里假设 `rename` 接口也能处理 `moduleId` 的更新，如果不是，需要调整后端接口或前端调用。
-      const response = await javaService.put(
-        `/question-bank/${fileId}/update`, // 假设有一个通用的update接口
+      const response = await goService.put(
+		`/question-bank/${fileId}/rename`,
         updateData // 例如 { name: '新的文件名.pdf', moduleId: 2 }
       );
       const res = response.data;
@@ -267,7 +267,7 @@ export const questionBankStore = reactive({
       // 后端交互点 5: 批量删除题库文件
       // ----------------------------------------------------
       // DELETE请求通常将数据放在 `data` 字段中
-      const response = await javaService.delete(`/question-bank/batch-delete`, {
+      const response = await goService.delete(`/question-bank/batch-delete`, {
         data: { ids: ids, moduleId: moduleId } // 根据后端接口调整参数名
       });
 
@@ -518,7 +518,7 @@ export const questionBankStore = reactive({
 
     try {
       // 假设您的后端提供一个接口，根据 fileId 获取其解析后的题目和答案
-      const response = await javaService.get(`/question-bank/${file.id}/questions-answers`); // 请替换为实际的API路径
+      const response = await goService.get(`/question-bank/${file.id}/questions-answers`);
       const res = response.data;
 
       if (res.code === 1) {
@@ -640,7 +640,7 @@ export const questionBankStore = reactive({
     const file = questionBankStore.getAllBankFiles().find(f => f.id === fileId);
     if (file && file.url) {
       // ----------------------------------------------------
-      // 后端交互点 7: 文件下载（通常直接通过URL下载，不经过javaService）
+      // 后端交互点 7：文件下载通常直接使用 Go 返回的对象地址。
       // ----------------------------------------------------
       window.open(file.url, '_blank');
     } else {

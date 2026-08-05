@@ -11,9 +11,8 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '^/api': {
-        target: 'http://477201a5.r12.cpolar.top:18081/',
-        changeOrigin: true,
-        pathRewrite: { '^/api': '' }
+        target: 'http://localhost:18082',
+        changeOrigin: true
       }
     }
   }
