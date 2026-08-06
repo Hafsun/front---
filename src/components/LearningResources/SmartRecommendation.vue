@@ -296,7 +296,7 @@ const iconComponents = {
     'Users': 'Users'
 };
 
-// 将阶段 6 的固定建议 Schema 映射到现有卡片结构，不改变页面展示组件。
+// 将 AI 学习建议映射到现有卡片结构。
 const mapSuggestionToPlan = (result) => ({
     aspect: result.aspect,
     themeColor: themeConfig[0].themeColor,

@@ -1,6 +1,6 @@
 // src/stores/questionBank.js
 import { reactive, computed } from "vue"
-import { goService } from '@/utils/request'; // 阶段 4 题库接口统一由 Go 接管
+import { goService } from '@/utils/request';
 import { ElMessage } from 'element-plus';
 
 // 定义题库状态的响应式存储
@@ -852,7 +852,5 @@ export const questionBankStore = reactive({
     questionBankStore.currentFileQuestionsAndAnswers = [];
     questionBankStore.questionsLoading = false;
     // =========================================================
-
-    localStorage.removeItem('selectedBankFile');
   }
 });

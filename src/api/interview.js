@@ -90,10 +90,10 @@ export const interviewApi = {
   },
 
   /**
-   * 保存报告到 Go 后端接口
+   * 保存报告到后端接口
    */
   saveReport: (reportPayload, options = {}) => {
-    console.log("正在发送报告到 Go 后端:", JSON.stringify(reportPayload, null, 2))
+    console.log("正在发送报告到后端:", JSON.stringify(reportPayload, null, 2))
     const payload = { ...reportPayload }
     delete payload.username
     return goService({

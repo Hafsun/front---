@@ -151,7 +151,7 @@ const saveReport = async () => {
 
   try {
     isSaving.value = true;
-    console.log('开始保存报告到 Go 后端...');
+    console.log('开始保存报告到后端...');
     
     if (!interviewStore.finalReportData) {
       throw new Error('报告数据不存在，无法保存');

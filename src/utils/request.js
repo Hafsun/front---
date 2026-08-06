@@ -4,11 +4,11 @@ import router from "@/router" // 确保导入了路由实例
 // 后端服务配置
 const serviceConfig = {
   go: {
-    baseURL: process.env.VUE_APP_GO_API_URL || "http://localhost:18082/api/",
+    baseURL: process.env.VUE_APP_GO_API_URL || "http://localhost:18082/api/v1/",
     timeout: 60000,
   },
   goAI: {
-    // 阶段 6 保留旧 Python REST 的无 /api URL 契约。
+    // AI 接口不使用 /api 前缀。
     baseURL: process.env.VUE_APP_GO_AI_URL || "http://localhost:18082/",
     timeout: 240000,
   },
@@ -27,7 +27,6 @@ const noTokenRoutes = new Set([
   "/register",
   "/getPassProtect",
   "/forgotPassword",
-  "/select_of_resume/resume",
   "/interview/report",
   "/me/suggestion",
 ])
@@ -67,10 +66,6 @@ function isTokenValid(token) {
 function handleAuthFailure() {
   console.log("认证失败，清除用户数据并跳转到登录页")
 
-  // 清除本地存储
-  localStorage.removeItem("token")
-  localStorage.removeItem("userInfo")
-
   import("@/stores/user")
     .then(({ useUserStore }) => {
       const userStore = useUserStore()
@@ -87,6 +82,16 @@ function handleAuthFailure() {
   }
 }
 
+// 获取当前 token（仅内存，不依赖 localStorage）
+function getToken() {
+  try {
+    const { useUserStore } = require("@/stores/user")
+    return useUserStore().token || ""
+  } catch {
+    return ""
+  }
+}
+
 // 创建axios实例的工厂函数
 function createService(type) {
   const config = serviceConfig[type] || serviceConfig.go
@@ -95,7 +100,7 @@ function createService(type) {
   // 请求拦截器
   service.interceptors.request.use(
     (config) => {
-      const token = window.localStorage.getItem("token")
+      const token = getToken()
 
       console.log("=== 请求拦截器调试信息 ===")
       console.log("请求URL:", config.url)
@@ -209,7 +214,7 @@ class WebSocketManager {
     this.isConnecting = true
     this.isManualClose = false
 
-    const token = window.localStorage.getItem("token")
+    const token = getToken()
     if (!isTokenValid(token)) {
       this.isConnecting = false
       handleAuthFailure()
@@ -340,7 +345,7 @@ class WebSocketManager {
   }
 }
 
-// HTTP 与 WebSocket 统一由 Go 后端承载。
+// 创建各后端服务的 axios 实例。
 const goService = createService("go")
 const goAIService = createService("goAI")
 

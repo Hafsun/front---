@@ -1,5 +1,6 @@
 import { reactive } from "vue"
 import { getAccuracyEvaluation, getAccuracyScore, toNumber, toSeconds } from "@/utils/report"
+import { useUserStore } from "@/stores/user"
 
 // 定义面试状态的响应式存储 - 改进版本，添加内存管理
 export const interviewStore = reactive({
@@ -675,8 +676,8 @@ export const interviewStore = reactive({
     }
 
     const reportData = this.finalReportData
-    const userStore = JSON.parse(localStorage.getItem("userStore") || "{}")
-    const username = userStore.username || "admin"
+    const userStore = useUserStore()
+    const username = userStore.userInfo?.username || "admin"
 
     console.log("从localStorage获取的用户信息:", userStore)
     console.log("使用的用户名:", username)

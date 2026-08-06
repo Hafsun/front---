@@ -122,6 +122,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { setSidebar, setSubmenu } from '@/api/userprefs';
 // Import all necessary Element Plus icons
 import {
   ArrowLeft,
@@ -142,6 +143,10 @@ import {
 const isCollapsed = ref(false);
 const route = useRoute();
 
+// 子菜单手动打开状态（仅内存，由后端初始化）
+const accountSubmenuManuallyOpened = ref(false);
+const personalInfoSubmenuManuallyOpened = ref(false);
+
 const props = defineProps({
   initialCollapsed: {
     type: Boolean,
@@ -153,7 +158,7 @@ const emit = defineEmits(['toggle', 'sidebar-width-change']);
 
 const handleToggle = () => {
   isCollapsed.value = !isCollapsed.value;
-  localStorage.setItem('sidebarCollapsed', isCollapsed.value.toString());
+  setSidebar(isCollapsed.value).catch(() => {});
   emit('toggle', isCollapsed.value);
 };
 
@@ -167,18 +172,16 @@ const defaultOpenedSubmenus = computed(() => {
 
   const opened = [];
   const isAccountRoute = route.path.startsWith('/home/account/');
-  const wasAccountManuallyOpened = localStorage.getItem('accountSubmenuManuallyOpened') === 'true';
 
   const isPersonalInfoRoute = route.path.startsWith('/home/personal-info/');
-  const wasPersonalInfoManuallyOpened = localStorage.getItem('personalInfoSubmenuManuallyOpened') === 'true';
 
   // “账户信息”子菜单应该展开的条件：
-  if (isAccountRoute || wasAccountManuallyOpened) {
+  if (isAccountRoute || accountSubmenuManuallyOpened.value) {
     opened.push('account-management');
   }
 
-  // “个人信息”子菜单应该展开的条件：
-  if (isPersonalInfoRoute || wasPersonalInfoManuallyOpened) {
+  // "个人信息"子菜单应该展开的条件：
+  if (isPersonalInfoRoute || personalInfoSubmenuManuallyOpened.value) {
     opened.push('personal-info-management');
   }
 
@@ -188,9 +191,11 @@ const defaultOpenedSubmenus = computed(() => {
 // 处理子菜单打开事件
 const handleSubmenuOpen = (index) => {
   if (index === 'account-management') {
-    localStorage.setItem('accountSubmenuManuallyOpened', 'true');
+    accountSubmenuManuallyOpened.value = true;
+    setSubmenu('account-management', true).catch(() => {});
   } else if (index === 'personal-info-management') {
-    localStorage.setItem('personalInfoSubmenuManuallyOpened', 'true');
+    personalInfoSubmenuManuallyOpened.value = true;
+    setSubmenu('personal-info-management', true).catch(() => {});
   }
 };
 
@@ -198,7 +203,13 @@ const handleSubmenuOpen = (index) => {
 const handleSubmenuClose = (index) => {
   if (index === 'account-management') {
     if (!route.path.startsWith('/home/account/')) {
-      localStorage.setItem('accountSubmenuManuallyOpened', 'false');
+      accountSubmenuManuallyOpened.value = false;
+      setSubmenu('account-management', false).catch(() => {});
+    }
+  } else if (index === 'personal-info-management') {
+    if (!route.path.startsWith('/home/personal-info/')) {
+      personalInfoSubmenuManuallyOpened.value = false;
+      setSubmenu('personal-info-management', false).catch(() => {});
     }
   }
 };
@@ -210,16 +221,7 @@ const emitSidebarWidth = () => {
 };
 
 onMounted(() => {
-  const savedState = localStorage.getItem('sidebarCollapsed');
-  isCollapsed.value = savedState ? savedState === 'true' : props.initialCollapsed;
-
-  // 确保 localStorage 中有初始值
-  if (localStorage.getItem('accountSubmenuManuallyOpened') === null) {
-    localStorage.setItem('accountSubmenuManuallyOpened', 'false');
-  }
-  if (localStorage.getItem('personalInfoSubmenuManuallyOpened') === null) {
-    localStorage.setItem('personalInfoSubmenuManuallyOpened', 'false');
-  }
+  isCollapsed.value = props.initialCollapsed;
 
   emitSidebarWidth(); // 首次挂载时发出初始宽度
 });

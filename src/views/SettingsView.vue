@@ -54,12 +54,13 @@
 <script setup>
 import { reactive, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-import { useThemeStore } from '../stores/theme'; // 导入主题 store
+import { useThemeStore } from '../stores/theme';
+import { setSettings } from '@/api/userprefs';
 
 const themeStore = useThemeStore();
 
 const settingsForm = reactive({
-  theme: themeStore.currentTheme, // 从主题 store 获取当前主题
+  theme: themeStore.currentTheme,
   language: 'zh-CN',
   receiveNotifications: true,
   receiveEmailNotifications: false,
@@ -67,10 +68,7 @@ const settingsForm = reactive({
 });
 
 onMounted(() => {
-  // 从 localStorage 或其他地方加载用户保存的设置
-  const savedSettings = JSON.parse(localStorage.getItem('userSettings')) || {};
-  Object.assign(settingsForm, savedSettings);
-  // 确保主题设置与 store 同步
+  // 设置将从后端 Redis 加载，此处保持默认值
   settingsForm.theme = themeStore.currentTheme;
 });
 
@@ -79,9 +77,15 @@ const handleThemeChange = (newTheme) => {
 };
 
 const saveSettings = () => {
-  localStorage.setItem('userSettings', JSON.stringify(settingsForm));
-  ElMessage.success('系统配置保存成功！');
-  console.log('保存的系统配置:', settingsForm);
+  const settings = { ...settingsForm };
+  setSettings(settings)
+    .then(() => {
+      ElMessage.success('系统配置保存成功！');
+      console.log('保存的系统配置:', settingsForm);
+    })
+    .catch(() => {
+      ElMessage.error('保存失败，请重试');
+    });
 };
 
 const resetSettings = () => {
@@ -90,8 +94,8 @@ const resetSettings = () => {
   settingsForm.receiveNotifications = true;
   settingsForm.receiveEmailNotifications = false;
   settingsForm.allowDataAnalysis = true;
-  themeStore.setTheme('default'); // 重置主题
-  localStorage.removeItem('userSettings'); // 清除保存的设置
+  themeStore.setTheme('default');
+  setSettings({ ...settingsForm }).catch(() => {});
   ElMessage.info('系统配置已重置为默认值。');
 };
 </script>

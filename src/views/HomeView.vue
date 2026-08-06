@@ -39,6 +39,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { setInterviewPreset } from '@/api/userprefs'
 import HeroSection from '@/components/home/HeroSection.vue'
 import QuickNavSection from '@/components/home/QuickNavSection.vue'
 import FeaturesSection from '@/components/home/FeaturesSection.vue'
@@ -132,7 +133,7 @@ const exploreDomain = async (domain) => {
     
     const config = domainConfig[domain.name]
     if (config) {
-      localStorage.setItem('presetInterviewConfig', JSON.stringify(config))
+      setInterviewPreset(config).catch(() => {});
       ElMessage.success(`已为您预设${domain.name}面试配置`)
     }
     

@@ -31,11 +31,16 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, provide } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useTabsStore } from '@/stores/tabs'
+import { useThemeStore } from '@/stores/theme'
+import { getAllPrefs } from '@/api/userprefs'
 import AppSidebar from './Layout/AppSidebar.vue'
 import WelcomeHeader from './Layout/WelcomeHeader.vue'
 import WindowTabs from './Layout/WindowTabs.vue'
 
 const userStore = useUserStore()
+const tabsStore = useTabsStore()
+const themeStore = useThemeStore()
 const sidebarOpen = ref(true)
 const headerVisible = ref(true)
 const sidebarWidth = ref(220)
@@ -96,6 +101,27 @@ async function initUserInfo() {
   }
 }
 
+// 从后端 Redis 加载用户偏好（主题、标签页、侧边栏状态等）
+async function loadUserPrefs() {
+  try {
+    const { data } = await getAllPrefs()
+    if (data.code === 1 && data.data) {
+      const prefs = data.data
+      // 恢复主题
+      if (prefs.theme && prefs.theme !== 'default') {
+        themeStore.setThemeWithoutSave(prefs.theme)
+      }
+      // 恢复标签页历史
+      if (prefs.visitedViews && prefs.visitedViews.length > 0) {
+        tabsStore.visitedViews = prefs.visitedViews
+      }
+      // 注意：侧边栏状态由 AppSidebar 组件自行管理
+    }
+  } catch (error) {
+    console.warn("加载用户偏好失败:", error)
+  }
+}
+
 provide('headerVisible', headerVisible)
 provide('toggleHeaderVisibility', toggleHeaderVisibility)
 
@@ -104,6 +130,7 @@ onMounted(() => {
   window.addEventListener('keydown', onKeydown)
   onResize()
   initUserInfo()
+  loadUserPrefs()
 
   // 聊天组件地址可能包含访问令牌，只允许从项目级环境变量注入。
   const chatWidgetUrl = process.env.VUE_APP_CHAT_WIDGET_URL
